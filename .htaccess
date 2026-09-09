@@ -1,0 +1,17 @@
+# Запрет листинга и доступ к служебным путям
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Блок секретов и служебных каталогов
+    RewriteRule ^(config|app|database|storage|vendor)/ - [F,L]
+    RewriteRule ^\.env - [F,L]
+
+    # Если DocumentRoot = корень проекта — проксируем в public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    RewriteRule ^$ public/ [L]
+</IfModule>
