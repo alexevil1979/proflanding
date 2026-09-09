@@ -1,17 +1,5 @@
-# Apache 2.4 — proflanding.1tlt.ru
-# PHP 8.2 из сорцов через php82-fpm → 127.0.0.1:9000
-# DocumentRoot = /ssd/www/proflanding/public
-#
-# ВАЖНО: сначала ставим ТОЛЬКО :80 (без SSLCertificateFile).
-# Сертификат выпускает certbot — он сам добавит :443.
-#
-#   sudo a2enmod rewrite proxy proxy_fcgi headers deflate expires ssl
-#   sudo cp deploy/apache-vhost.conf.example /etc/apache2/sites-available/proflanding.conf
-#   sudo a2ensite proflanding.conf
-#   sudo apache2ctl configtest && sudo systemctl reload apache2
-#   sudo certbot --apache -d proflanding.1tlt.ru
-#   sudo systemctl reload php82-fpm
-#   sudo systemctl reload apache2
+# Apache 2.4 — proflanding.1tlt.ru (HTTP-only до certbot)
+# PHP-FPM: proxy:fcgi://127.0.0.1:9000
 
 <VirtualHost *:80>
     ServerName proflanding.1tlt.ru
@@ -24,7 +12,6 @@
         Options -Indexes +FollowSymLinks
     </Directory>
 
-    # PHP 8.2 FPM (из сорцов)
     <FilesMatch "\.php$">
         SetHandler "proxy:fcgi://127.0.0.1:9000"
     </FilesMatch>
@@ -36,9 +23,3 @@
     ErrorLog ${APACHE_LOG_DIR}/proflanding-error.log
     CustomLog ${APACHE_LOG_DIR}/proflanding-access.log combined
 </VirtualHost>
-
-# Блок :443 НЕ добавляйте вручную до выпуска сертификата.
-# После успешного: sudo certbot --apache -d proflanding.1tlt.ru
-# certbot сам создаст SSL VirtualHost с путями:
-#   /etc/letsencrypt/live/proflanding.1tlt.ru/fullchain.pem
-#   /etc/letsencrypt/live/proflanding.1tlt.ru/privkey.pem
