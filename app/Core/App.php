@@ -15,6 +15,8 @@ final class App
         Auth::startSession();
         self::securityHeaders();
 
+        Lang::boot($root);
+
         $router = new Router();
         require $root . '/config/routes.php';
         $router->dispatch(Request::method(), Request::uri());

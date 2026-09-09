@@ -20,16 +20,15 @@ final class LeadController
     {
         Csrf::requireValid();
 
-        // Honeypot
         if (trim((string)Request::input('website', '')) !== '') {
-            View::json(['ok' => true, 'message' => 'Спасибо! Заявка отправлена.']);
+            View::json(['ok' => true, 'message' => __('lead_ok')]);
             return;
         }
 
         $ip = Request::ip();
         $limit = Config::get('rate_limit', ['max' => 5, 'minutes' => 10]);
         if (Lead::countRecentByIp($ip, (int)$limit['minutes']) >= (int)$limit['max']) {
-            View::json(['ok' => false, 'error' => 'Слишком много заявок. Попробуйте позже.'], 429);
+            View::json(['ok' => false, 'error' => __('rate_limited')], 429);
             return;
         }
 
@@ -44,17 +43,27 @@ final class LeadController
             'consent' => Request::input('consent'),
         ];
 
-        $v = new Validator($data);
-        $v->required('name', 'Имя')
-            ->maxLen('name', 120, 'Имя')
-            ->required('phone', 'Телефон')
-            ->phone('phone', 'телефон')
-            ->email('email', 'email', true)
-            ->maxLen('message', 3000, 'Сообщение')
-            ->accepted('consent', 'Нужно согласие на обработку персональных данных');
+        $errors = [];
+        if ($data['name'] === '') {
+            $errors['name'] = __('required_name');
+        }
+        if ($data['phone'] === '') {
+            $errors['phone'] = __('required_phone');
+        } else {
+            $digits = preg_replace('/\D/', '', $data['phone']) ?? '';
+            if (strlen($digits) < 10) {
+                $errors['phone'] = __('invalid_phone');
+            }
+        }
+        if ($data['email'] !== '' && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = __('invalid_email');
+        }
+        if (!$data['consent']) {
+            $errors['consent'] = __('required_consent');
+        }
 
-        if ($v->fails()) {
-            View::json(['ok' => false, 'error' => $v->firstError(), 'errors' => $v->errors()], 422);
+        if ($errors !== []) {
+            View::json(['ok' => false, 'error' => (string)reset($errors), 'errors' => $errors], 422);
             return;
         }
 
@@ -89,10 +98,9 @@ final class LeadController
         try {
             Notify::leadCreated($leadId);
         } catch (\Throwable $e) {
-            // заявка уже сохранена
         }
 
-        View::json(['ok' => true, 'message' => 'Спасибо! Заявка отправлена. Я свяжусь с вами в ближайшее время.']);
+        View::json(['ok' => true, 'message' => __('lead_ok')]);
     }
 
     private function utm(string $key): ?string

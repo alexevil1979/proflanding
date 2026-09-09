@@ -66,7 +66,7 @@
       if (submit) submit.disabled = true;
       try {
         const fd = new FormData(form);
-        const res = await fetch('/lead', {
+        const res = await fetch((window.PL_I18N && window.PL_I18N.leadUrl) || '/lead', {
           method: 'POST',
           body: fd,
           headers: {
@@ -76,13 +76,13 @@
         });
         const data = await res.json().catch(function () { return {}; });
         if (res.ok && data.ok) {
-          showToast(data.message || 'Заявка отправлена');
+          showToast(data.message || (window.PL_I18N && window.PL_I18N.leadOk) || 'OK');
           form.reset();
         } else {
-          showToast(data.error || 'Не удалось отправить заявку', true);
+          showToast(data.error || (window.PL_I18N && window.PL_I18N.leadErr) || 'Error', true);
         }
       } catch (err) {
-        showToast('Сеть недоступна. Попробуйте ещё раз.', true);
+        showToast((window.PL_I18N && window.PL_I18N.leadNetwork) || 'Network error', true);
       } finally {
         if (submit) submit.disabled = false;
       }

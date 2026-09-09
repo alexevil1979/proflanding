@@ -7,10 +7,12 @@
 ## Возможности
 
 - Публичный лендинг с услугами/пакетами из БД
+- Мультиязычность как на hiddifysales.com: `ru` `/`, `en`, `fa`, `zh`, `tr`, `ar` (+ RTL для fa/ar)
+- Цены в ₽ и ~$ по курсу ЦБ РФ (кэш в settings, кнопка обновления в админке)
 - Форма заявок (CSRF + honeypot + rate limit)
 - Админка: заявки, услуги, пакеты, контент, SEO, уведомления, смена пароля
 - Уведомления: Telegram Bot API + SMTP Gmail (STARTTLS)
-- SEO: Open Graph, JSON-LD, sitemap.xml, robots.txt
+- SEO: Open Graph, JSON-LD, hreflang, sitemap.xml, robots.txt
 
 ## Требования
 

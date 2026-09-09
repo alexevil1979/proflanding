@@ -7,6 +7,21 @@ function e(?string $value): string
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function __(string $key, ?string $default = null): string
+{
+    return \App\Core\Lang::get($key, $default);
+}
+
+function lang_url(string $path = '/'): string
+{
+    return \App\Core\Lang::url($path);
+}
+
+function current_lang(): string
+{
+    return \App\Core\Lang::code();
+}
+
 function money(?float $amount): string
 {
     if ($amount === null) {
@@ -15,12 +30,17 @@ function money(?float $amount): string
     return number_format($amount, 0, '.', ' ') . ' ₽';
 }
 
+function money_dual(?float $amount): string
+{
+    return \App\Core\Currency::formatRubUsd($amount);
+}
+
 function period_label(string $period): string
 {
     return match ($period) {
-        'monthly' => 'в месяц',
-        'custom' => 'по согласованию',
-        default => 'разово',
+        'monthly' => __('period_monthly'),
+        'custom' => __('period_custom'),
+        default => __('period_one_time'),
     };
 }
 
@@ -30,9 +50,44 @@ function setting(string $key, string $default = ''): string
     if ($cache === null) {
         $cache = \App\Models\Setting::all();
     }
+    // Перевод контентных ключей из lang/content/{lang}.php
+    $translated = \App\Core\Lang::content($key);
+    if ($translated !== '') {
+        return $translated;
+    }
     return isset($cache[$key]) && $cache[$key] !== null && $cache[$key] !== ''
         ? (string)$cache[$key]
         : $default;
+}
+
+function service_field(array $service, string $field): string
+{
+    $slug = (string)($service['slug'] ?? '');
+    $fallback = (string)($service[$field] ?? '');
+    if ($slug === '') {
+        return $fallback;
+    }
+    $t = \App\Core\Lang::content('services.' . $slug . '.' . $field, '');
+    return $t !== '' ? $t : $fallback;
+}
+
+function package_field(array $package, string $field): string
+{
+    $titleRu = (string)($package['title'] ?? '');
+    $fallback = (string)($package[$field] ?? '');
+    $t = \App\Core\Lang::content('packages.' . $titleRu . '.' . $field, '');
+    return $t !== '' ? $t : $fallback;
+}
+
+/** @return list<string> */
+function package_features(array $package): array
+{
+    $titleRu = (string)($package['title'] ?? '');
+    $raw = \App\Core\Lang::contentArray('packages.' . $titleRu . '.features');
+    if (is_array($raw) && $raw !== []) {
+        return array_map('strval', $raw);
+    }
+    return \App\Models\Package::featuresList($package['features'] ?? null);
 }
 
 function app_url(string $path = ''): string

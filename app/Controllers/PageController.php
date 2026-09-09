@@ -12,11 +12,9 @@ final class PageController
 {
     public function privacy(): void
     {
-        $seo = PageSeo::get('privacy') ?? [
-            'title' => 'Политика конфиденциальности',
-            'description' => '',
-            'h1' => 'Политика конфиденциальности',
-        ];
+        $seo = PageSeo::get('privacy') ?? [];
+        $seo['title'] = __('footer_privacy');
+        $seo['h1'] = __('footer_privacy');
         View::render('pages/privacy', [
             'seo' => $seo,
             'settings' => Setting::all(),
@@ -25,11 +23,9 @@ final class PageController
 
     public function offer(): void
     {
-        $seo = PageSeo::get('offer') ?? [
-            'title' => 'Публичная оферта',
-            'description' => '',
-            'h1' => 'Публичная оферта',
-        ];
+        $seo = PageSeo::get('offer') ?? [];
+        $seo['title'] = __('footer_offer');
+        $seo['h1'] = __('footer_offer');
         View::render('pages/offer', [
             'seo' => $seo,
             'settings' => Setting::all(),
