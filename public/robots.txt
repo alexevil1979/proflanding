@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://proflanding.1tlt.ru/sitemap.xml
+Sitemap: https://bizdevops.site/sitemap.xml

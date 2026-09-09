@@ -51,7 +51,7 @@ DB_PASS=пароль_root
 
 ### .env (обязательно)
 
-- `APP_URL` — https://proflanding.1tlt.ru
+- `APP_URL` — https://bizdevops.site
 - `APP_KEY` — случайная строка 32+ символов
 - `DB_*` — доступ к MySQL
 - `SMTP_*` — Gmail + **App Password**
