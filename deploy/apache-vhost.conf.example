@@ -1,32 +1,22 @@
 # Apache 2.4 — proflanding.1tlt.ru
+# PHP 8.2 из сорцов через php82-fpm → 127.0.0.1:9000
 # DocumentRoot = /ssd/www/proflanding/public
-# SSL: certbot --apache -d proflanding.1tlt.ru
+#
+# Модули:
+#   sudo a2enmod rewrite proxy proxy_fcgi headers deflate expires ssl
+# SSL:
+#   sudo certbot --apache -d proflanding.1tlt.ru
+# После правок PHP:
+#   sudo systemctl reload php82-fpm
+#   sudo systemctl reload apache2
 
 <VirtualHost *:80>
     ServerName proflanding.1tlt.ru
-    DocumentRoot /ssd/www/proflanding/public
 
-    <Directory /ssd/www/proflanding/public>
-        AllowOverride All
-        Require all granted
-        DirectoryIndex index.php
-        Options -Indexes +FollowSymLinks
-    </Directory>
-
-    <IfModule mod_deflate.c>
-        AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json application/xml
-    </IfModule>
-
-    ErrorLog ${APACHE_LOG_DIR}/proflanding-error.log
-    CustomLog ${APACHE_LOG_DIR}/proflanding-access.log combined
-
-    RewriteEngine on
-    RewriteCond %{HTTPS} !=on
-    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+    RewriteEngine On
+    RewriteRule ^ https://proflanding.1tlt.ru%{REQUEST_URI} [L,R=301]
 </VirtualHost>
 
-# После certbot появится похожий блок :443 с SSLEngine on
-# и путями к /etc/letsencrypt/live/proflanding.1tlt.ru/
 <VirtualHost *:443>
     ServerName proflanding.1tlt.ru
     DocumentRoot /ssd/www/proflanding/public
@@ -37,6 +27,11 @@
         DirectoryIndex index.php
         Options -Indexes +FollowSymLinks
     </Directory>
+
+    # PHP 8.2 FPM (из сорцов), как на остальных проектах сервера
+    <FilesMatch "\.php$">
+        SetHandler "proxy:fcgi://127.0.0.1:9000"
+    </FilesMatch>
 
     <IfModule mod_deflate.c>
         AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json application/xml

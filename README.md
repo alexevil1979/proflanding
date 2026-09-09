@@ -14,9 +14,9 @@
 
 ## Требования
 
-- PHP 8.2+ с расширениями: `pdo_mysql`, `mbstring`, `openssl`, `json`
+- PHP 8.2+ (на VPS — из сорцов, **php82-fpm** на `127.0.0.1:9000`) с расширениями: `pdo_mysql`, `mbstring`, `openssl`, `json`
 - MySQL 5.7+ (InnoDB, utf8mb4)
-- Apache 2.4: `mod_rewrite`, желательно `mod_expires`, `mod_deflate`, `mod_headers`
+- Apache 2.4: `mod_rewrite`, `mod_proxy`, `mod_proxy_fcgi`, желательно `mod_expires`, `mod_deflate`, `mod_headers`
 - SSL (Let's Encrypt) на уровне хоста
 
 ## Установка на VPS
@@ -68,9 +68,17 @@ chown -R www-data:www-data /ssd/www/proflanding
 chmod -R 775 /ssd/www/proflanding/storage
 ```
 
-### Apache
+### Apache + PHP-FPM (как на сервере)
 
-Предпочтительно:
+PHP из сорцов, через FPM:
+
+```apache
+<FilesMatch "\.php$">
+    SetHandler "proxy:fcgi://127.0.0.1:9000"
+</FilesMatch>
+```
+
+DocumentRoot:
 
 ```
 DocumentRoot /ssd/www/proflanding/public
@@ -81,14 +89,15 @@ DirectoryIndex index.php
 Пример: `deploy/apache-vhost.conf.example`
 
 ```bash
-# Ubuntu/Debian
-sudo apt install php8.2 php8.2-mysql apache2
-sudo a2enmod rewrite headers expires deflate ssl
-# vhost уже под proflanding.1tlt.ru:
-sudo cp deploy/apache-vhost.conf.example /etc/apache2/sites-available/proflanding.conf
+sudo a2enmod rewrite proxy proxy_fcgi headers expires deflate ssl
+sudo cp /ssd/www/proflanding/deploy/apache-vhost.conf.example /etc/apache2/sites-available/proflanding.conf
 sudo a2ensite proflanding.conf
 sudo apache2ctl configtest && sudo systemctl reload apache2
 sudo certbot --apache -d proflanding.1tlt.ru
+
+# PHP-FPM (сервис из сорцов):
+sudo systemctl reload php82-fpm
+sudo systemctl reload apache2
 ```
 
 Если DocumentRoot нельзя сменить на `public/`, корневые `index.php` + `.htaccess` проксируют в `public/`.
