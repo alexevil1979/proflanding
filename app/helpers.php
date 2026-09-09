@@ -30,9 +30,25 @@ function money(?float $amount): string
     return number_format($amount, 0, '.', ' ') . ' ₽';
 }
 
+/** @return array{rub:string,usd:string} */
+function money_offer(?float $amount): array
+{
+    if ($amount === null) {
+        return ['rub' => '', 'usd' => ''];
+    }
+    $rub = number_format($amount, 0, '.', ' ') . ' ₽';
+    $usdVal = \App\Core\Currency::toUsd($amount);
+    $usd = $usdVal !== null ? '~$' . number_format($usdVal, 2, '.', '') : '';
+    return ['rub' => $rub, 'usd' => $usd];
+}
+
 function money_dual(?float $amount): string
 {
-    return \App\Core\Currency::formatRubUsd($amount);
+    $o = money_offer($amount);
+    if ($o['rub'] === '') {
+        return '';
+    }
+    return $o['usd'] !== '' ? $o['rub'] . ' · ' . $o['usd'] : $o['rub'];
 }
 
 function period_label(string $period): string
@@ -46,7 +62,6 @@ function period_label(string $period): string
 
 function brand_name(): string
 {
-    // RU — кириллица из настроек; остальные языки — латиница (не переводится)
     if (\App\Core\Lang::code() === 'ru') {
         return setting('site_name', 'Александр М.');
     }
@@ -54,7 +69,6 @@ function brand_name(): string
     if ($fromLang !== '') {
         return $fromLang;
     }
-    // админ может задать site_name_latin в настройках
     static $cache = null;
     if ($cache === null) {
         $cache = \App\Models\Setting::all();
@@ -70,13 +84,13 @@ function setting(string $key, string $default = ''): string
         $cache = \App\Models\Setting::all();
     }
 
-    // Эти поля всегда из админки — не перекрывать lang/content/*
     $fromAdminOnly = [
-        'city', 'phone', 'email', 'telegram', 'whatsapp',
+        'public_url', 'city', 'phone', 'email', 'telegram', 'whatsapp',
         'experience_years', 'projects_count', 'response_hours',
         'site_name', 'site_name_latin', 'yandex_metrika', 'google_analytics',
         'usd_rate', 'usd_rate_updated_at', 'telegram_enabled', 'mail_enabled',
         'notify_tpl_email_subject', 'avatar_path', 'og_image',
+        'work_format', 'response_sla', 'not_doing',
         'telegram_bot_token', 'telegram_chat_id',
         'telegram_proxy_enabled', 'telegram_proxy_type', 'telegram_proxy_host',
         'telegram_proxy_port', 'telegram_proxy_user', 'telegram_proxy_pass',
@@ -129,15 +143,36 @@ function package_features(array $package): array
 function app_url(string $path = ''): string
 {
     $base = rtrim((string)\App\Core\Config::get('url', ''), '/');
+    try {
+        $pub = \App\Models\Setting::get('public_url', '');
+        if ($pub !== '') {
+            $base = rtrim($pub, '/');
+        }
+    } catch (\Throwable $e) {
+    }
     if ($base === '') {
         $scheme = \App\Core\Request::isHttps() ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $base = $scheme . '://' . $host;
     }
+    $base = preg_replace('#^https?://proflanding\.1tlt\.ru#i', 'https://bizdevops.site', $base) ?? $base;
+    $base = rtrim($base, '/');
     if ($path === '' || $path === '/') {
         return $base . '/';
     }
     return $base . '/' . ltrim($path, '/');
+}
+
+function media_url(?string $path): string
+{
+    $path = trim((string)$path);
+    if ($path === '') {
+        return '';
+    }
+    if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        return $path;
+    }
+    return app_url(ltrim($path, '/'));
 }
 
 function flash(string $key, ?string $value = null): ?string

@@ -11,16 +11,27 @@ use App\Core\Csrf;
 $h1 = $seo['h1'] ?? setting('hero_offer');
 $name = brand_name();
 $role = setting('site_role');
+$homeUrl = app_url(ltrim(lang_url('/'), '/'));
+$avatar = trim((string)setting('avatar_path'));
+$exp = setting('experience_years', '10+');
+if ($exp !== '' && !str_contains($exp, '+') && preg_match('/^\d+$/', $exp)) {
+    $exp .= '+';
+}
+
 $jsonLdPerson = [
     '@context' => 'https://schema.org',
     '@type' => 'Person',
+    '@id' => $homeUrl . '#person',
     'name' => $name,
     'jobTitle' => $role,
-    'url' => app_url(ltrim(lang_url('/'), '/')),
+    'url' => $homeUrl,
     'email' => setting('email'),
     'telephone' => setting('phone'),
     'address' => ['@type' => 'PostalAddress', 'addressLocality' => setting('city')],
 ];
+if ($avatar !== '') {
+    $jsonLdPerson['image'] = media_url($avatar);
+}
 $offersClean = [];
 foreach ($services as $s) {
     $o = [
@@ -38,19 +49,21 @@ foreach ($services as $s) {
 $jsonLdService = [
     '@context' => 'https://schema.org',
     '@type' => 'ProfessionalService',
+    '@id' => $homeUrl . '#service',
     'name' => $name . ' — ' . $role,
     'description' => setting('site_tagline'),
-    'url' => app_url(ltrim(lang_url('/'), '/')),
+    'url' => $homeUrl,
     'areaServed' => setting('city'),
-    'priceRange' => '₽ / $',
+    'priceRange' => '₽',
 ];
 $jsonLdCatalog = [
     '@context' => 'https://schema.org',
     '@type' => 'OfferCatalog',
+    '@id' => $homeUrl . '#offers',
     'name' => __('services_title'),
     'itemListElement' => $offersClean,
 ];
-$faqLd = ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => []];
+$faqLd = ['@context' => 'https://schema.org', '@type' => 'FAQPage', '@id' => $homeUrl . '#faq', 'mainEntity' => []];
 foreach ($faq as $item) {
     $faqLd['mainEntity'][] = [
         '@type' => 'Question',
@@ -78,23 +91,29 @@ foreach ($faq as $item) {
             </ul>
             <div class="hero-cta">
                 <a class="btn btn-primary" href="#lead"><?= e(__('cta_lead')) ?></a>
-                <a class="btn btn-ghost" href="#services"><?= e(__('cta_services')) ?></a>
+                <a class="btn btn-ghost" href="#services"><?= e(__('discuss')) ?></a>
             </div>
         </div>
         <div class="hero-visual reveal">
             <div class="portrait-card">
+                <?php if ($avatar !== ''): ?>
+                <img class="portrait portrait-photo" src="<?= e(media_url($avatar)) ?>" width="320" height="380" alt="<?= e(__('portrait_alt')) ?>" fetchpriority="high" decoding="async">
+                <?php else: ?>
                 <svg class="portrait" viewBox="0 0 320 380" width="320" height="380" role="img" aria-label="<?= e(__('portrait_alt')) ?>">
                     <defs>
                         <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
                             <stop offset="0%" stop-color="#0f766e"/>
-                            <stop offset="100%" stop-color="#134e4a"/>
+                            <stop offset="100%" stop-color="#1e3a5f"/>
                         </linearGradient>
                     </defs>
                     <rect width="320" height="380" rx="24" fill="url(#pg)"/>
-                    <circle cx="160" cy="140" r="58" fill="#ccfbf1" opacity=".9"/>
-                    <rect x="70" y="220" width="180" height="120" rx="60" fill="#99f6e4" opacity=".85"/>
-                    <text x="160" y="360" text-anchor="middle" fill="#ecfeff" font-size="14" font-family="Manrope,sans-serif">IT Specialist</text>
+                    <path d="M40 300c40-70 80-100 120-100s80 30 120 100" fill="none" stroke="#99f6e4" stroke-width="2" opacity=".55"/>
+                    <rect x="70" y="70" width="180" height="120" rx="12" fill="#042f2e" opacity=".35"/>
+                    <text x="160" y="140" text-anchor="middle" fill="#ecfeff" font-size="18" font-weight="700" font-family="Segoe UI,system-ui,sans-serif">BizDevOps</text>
+                    <text x="160" y="168" text-anchor="middle" fill="#99f6e4" font-size="12" font-family="Segoe UI,system-ui,sans-serif">PHP · Linux · Security</text>
+                    <text x="160" y="340" text-anchor="middle" fill="#ccfbf1" font-size="13" font-family="Segoe UI,system-ui,sans-serif"><?= e($role) ?></text>
                 </svg>
+                <?php endif; ?>
                 <div class="portrait-meta">
                     <strong><bdi dir="ltr"><?= e($name) ?></bdi></strong>
                     <span><?= e(setting('city')) ?></span>
@@ -104,13 +123,43 @@ foreach ($faq as $item) {
     </div>
 </section>
 
-<section class="stats" id="trust">
+<section class="stats" id="trust" aria-label="<?= e(__('trust_block_title')) ?>">
     <div class="container stats-grid">
-        <div class="stat reveal"><strong><?= e(setting('experience_years', '10')) ?>+</strong><span><?= e(__('stat_years')) ?></span></div>
+        <div class="stat reveal"><strong><?= e($exp) ?></strong><span><?= e(__('stat_years')) ?></span></div>
         <div class="stat reveal"><strong><?= e(setting('projects_count', '100+')) ?></strong><span><?= e(__('stat_projects')) ?></span></div>
         <div class="stat reveal"><strong><?= e(setting('response_hours', '2')) ?> <?= e(__('stat_hours_suffix')) ?></strong><span><?= e(__('stat_response')) ?></span></div>
     </div>
 </section>
+
+<?php if (setting('work_format') || setting('response_sla') || setting('not_doing')): ?>
+<section class="section trust-block" id="work-format" aria-labelledby="work-format-title">
+    <div class="container">
+        <header class="section-head reveal">
+            <h2 id="work-format-title"><?= e(__('trust_block_title')) ?></h2>
+        </header>
+        <div class="trust-grid">
+            <?php if (setting('work_format')): ?>
+            <div class="trust-card reveal">
+                <h3><?= e(__('trust_block_title')) ?></h3>
+                <p><?= e(setting('work_format')) ?></p>
+            </div>
+            <?php endif; ?>
+            <?php if (setting('response_sla')): ?>
+            <div class="trust-card reveal">
+                <h3><?= e(__('stat_response')) ?></h3>
+                <p><?= e(setting('response_sla')) ?></p>
+            </div>
+            <?php endif; ?>
+            <?php if (setting('not_doing')): ?>
+            <div class="trust-card reveal">
+                <h3><?= e(__('not_doing_title')) ?></h3>
+                <p><?= e(setting('not_doing')) ?></p>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 
 <section class="section" id="services" aria-labelledby="services-title">
     <div class="container">
@@ -119,7 +168,9 @@ foreach ($faq as $item) {
             <p><?= e(__('services_sub')) ?></p>
         </header>
         <div class="services-grid">
-            <?php foreach ($services as $service): ?>
+            <?php foreach ($services as $service):
+                $price = money_offer($service['price_from'] !== null ? (float)$service['price_from'] : null);
+            ?>
             <article class="service-card<?= !empty($service['is_featured']) ? ' is-featured' : '' ?> reveal">
                 <div class="service-top">
                     <span class="service-icon" aria-hidden="true"><?= e(mb_substr((string)$service['icon'], 0, 1)) ?></span>
@@ -128,23 +179,23 @@ foreach ($faq as $item) {
                 <h3><?= e(service_field($service, 'title')) ?></h3>
                 <p><?= e(service_field($service, 'short_text')) ?></p>
                 <div class="service-price">
-                    <?php if ($service['price_from'] !== null): ?>
-                        <strong><?= e(__('price_from')) ?> <?= e(money_dual((float)$service['price_from'])) ?></strong>
+                    <?php if ($price['rub'] !== ''): ?>
+                        <div class="price-stack">
+                            <strong><?= e(__('price_from')) ?> <?= e($price['rub']) ?></strong>
+                            <?php if ($price['usd'] !== ''): ?><small class="price-usd"><?= e($price['usd']) ?> <span class="sr-only"><?= e(__('usd_hint')) ?></span></small><?php endif; ?>
+                        </div>
                     <?php else: ?>
                         <strong><?= e(__('price_on_request')) ?></strong>
                     <?php endif; ?>
-                    <span><?= e($service['price_note'] ?: period_label($service['period'])) ?></span>
+                    <span class="price-note"><?= e($service['price_note'] ?: period_label($service['period'])) ?></span>
                 </div>
                 <button type="button" class="btn btn-secondary btn-block js-order"
                         data-service="<?= (int)$service['id'] ?>" data-package="">
-                    <?= e($service['cta_label'] ?: __('order')) ?>
+                    <?= e($service['cta_label'] ?: __('discuss')) ?>
                 </button>
             </article>
             <?php endforeach; ?>
         </div>
-        <?php if (!empty($usdRate)): ?>
-        <p class="rate-note muted reveal"><?= e(__('rate_note')) ?>: 1 USD ≈ <?= e(number_format((float)$usdRate, 2, '.', ' ')) ?> ₽</p>
-        <?php endif; ?>
     </div>
 </section>
 
@@ -155,22 +206,29 @@ foreach ($faq as $item) {
             <p><?= e(__('packages_sub')) ?></p>
         </header>
         <div class="packages-grid">
-            <?php foreach ($packages as $pkg): ?>
-            <?php $features = package_features($pkg); ?>
+            <?php foreach ($packages as $pkg):
+                $features = package_features($pkg);
+                $price = money_offer($pkg['price'] !== null ? (float)$pkg['price'] : null);
+            ?>
             <article class="package-card<?= !empty($pkg['is_featured']) ? ' is-featured' : '' ?> reveal">
                 <?php if (!empty($pkg['is_featured'])): ?><div class="package-ribbon"><?= e(__('optimal')) ?></div><?php endif; ?>
                 <h3><?= e(package_field($pkg, 'title')) ?></h3>
                 <p><?= e(package_field($pkg, 'description')) ?></p>
                 <div class="package-price">
-                    <?php if ($pkg['price'] !== null): ?><strong><?= e(money_dual((float)$pkg['price'])) ?></strong><?php endif; ?>
-                    <span><?= e($pkg['price_note'] ?? '') ?></span>
+                    <?php if ($price['rub'] !== ''): ?>
+                        <div class="price-stack">
+                            <strong><?= e($price['rub']) ?></strong>
+                            <?php if ($price['usd'] !== ''): ?><small class="price-usd"><?= e($price['usd']) ?></small><?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                    <span class="price-note"><?= e($pkg['price_note'] ?? '') ?></span>
                 </div>
                 <ul>
                     <?php foreach ($features as $f): ?><li><?= e((string)$f) ?></li><?php endforeach; ?>
                 </ul>
                 <button type="button" class="btn <?= !empty($pkg['is_featured']) ? 'btn-primary' : 'btn-secondary' ?> btn-block js-order"
                         data-service="" data-package="<?= (int)$pkg['id'] ?>">
-                    <?= e($pkg['cta_label'] ?: __('choose')) ?>
+                    <?= e($pkg['cta_label'] ?: __('cta_lead')) ?>
                 </button>
             </article>
             <?php endforeach; ?>
@@ -193,24 +251,37 @@ foreach ($faq as $item) {
     </div>
 </section>
 
-<section class="section section-alt" id="stack" aria-labelledby="stack-title">
+<?php if ($portfolio): ?>
+<section class="section section-alt" id="cases" aria-labelledby="cases-title">
     <div class="container">
         <header class="section-head reveal">
-            <h2 id="stack-title"><?= e(__('stack_title')) ?></h2>
-            <p><?= e(__('stack_sub')) ?></p>
+            <h2 id="cases-title"><?= e(__('cases_title', 'Кейсы')) ?></h2>
+            <p><?= e(__('cases_sub', 'Реальные задачи и результат.')) ?></p>
         </header>
-        <?php if ($portfolio): ?>
         <div class="cases-grid">
             <?php foreach ($portfolio as $case): ?>
             <article class="case-card reveal">
+                <?php if (!empty($case['image'])): ?>
+                <img class="case-image" src="<?= e(media_url($case['image'])) ?>" width="640" height="360" alt="<?= e($case['title']) ?>" loading="lazy" decoding="async">
+                <?php endif; ?>
                 <h3><?= e($case['title']) ?></h3>
                 <p><?= e($case['description'] ?? '') ?></p>
-                <p class="muted"><?= e($case['stack'] ?? '') ?></p>
+                <?php if (!empty($case['stack'])): ?><p class="muted"><?= e($case['stack']) ?></p><?php endif; ?>
                 <?php if (!empty($case['result_text'])): ?><p class="case-result"><?= e($case['result_text']) ?></p><?php endif; ?>
+                <?php if (!empty($case['url'])): ?><p><a href="<?= e($case['url']) ?>" target="_blank" rel="noopener"><?= e(__('case_link', 'Смотреть')) ?></a></p><?php endif; ?>
             </article>
             <?php endforeach; ?>
         </div>
-        <?php endif; ?>
+    </div>
+</section>
+<?php endif; ?>
+
+<section class="section<?= $portfolio ? '' : ' section-alt' ?>" id="stack" aria-labelledby="stack-title">
+    <div class="container">
+        <header class="section-head reveal">
+            <h2 id="stack-title"><?= e(__('stack_title_only', 'Стек')) ?></h2>
+            <p><?= e(__('stack_sub')) ?></p>
+        </header>
         <ul class="stack-list reveal">
             <li>PHP 8.2</li><li>MySQL</li><li>Apache</li><li>Linux</li><li>Git</li><li>Telegram bots</li><li>SEO</li><li>Nginx</li>
         </ul>
@@ -223,12 +294,21 @@ foreach ($faq as $item) {
             <h2 id="faq-title"><?= e(__('faq_title')) ?></h2>
             <p><?= e(__('faq_sub')) ?></p>
         </header>
-        <div class="faq-list">
+        <div class="faq-list" data-faq>
             <?php foreach ($faq as $i => $item): ?>
-            <details class="faq-item reveal"<?= $i === 0 ? ' open' : '' ?>>
-                <summary><?= e($item['q'] ?? '') ?></summary>
-                <p><?= e($item['a'] ?? '') ?></p>
-            </details>
+            <div class="faq-item reveal">
+                <h3 class="faq-q">
+                    <button type="button" class="faq-btn" id="faq-btn-<?= (int)$i ?>"
+                            aria-expanded="<?= $i === 0 ? 'true' : 'false' ?>"
+                            aria-controls="faq-panel-<?= (int)$i ?>">
+                        <?= e($item['q'] ?? '') ?>
+                    </button>
+                </h3>
+                <div class="faq-a" id="faq-panel-<?= (int)$i ?>" role="region"
+                     aria-labelledby="faq-btn-<?= (int)$i ?>"<?= $i === 0 ? '' : ' hidden' ?>>
+                    <p><?= e($item['a'] ?? '') ?></p>
+                </div>
+            </div>
             <?php endforeach; ?>
         </div>
     </div>
@@ -259,15 +339,18 @@ foreach ($faq as $item) {
 
             <div class="form-row">
                 <label for="name"><?= e(__('field_name')) ?> *</label>
-                <input id="name" name="name" type="text" required maxlength="120" autocomplete="name">
+                <input id="name" name="name" type="text" required maxlength="120" autocomplete="name" aria-describedby="err-name">
+                <p class="field-error" id="err-name" hidden></p>
             </div>
             <div class="form-row">
                 <label for="phone"><?= e(__('field_phone')) ?> *</label>
-                <input id="phone" name="phone" type="tel" required maxlength="40" autocomplete="tel">
+                <input id="phone" name="phone" type="tel" required maxlength="40" autocomplete="tel" aria-describedby="err-phone">
+                <p class="field-error" id="err-phone" hidden></p>
             </div>
             <div class="form-row">
                 <label for="email"><?= e(__('field_email')) ?></label>
-                <input id="email" name="email" type="email" maxlength="160" autocomplete="email">
+                <input id="email" name="email" type="email" maxlength="160" autocomplete="email" aria-describedby="err-email">
+                <p class="field-error" id="err-email" hidden></p>
             </div>
             <div class="form-row two">
                 <div>
@@ -303,10 +386,13 @@ foreach ($faq as $item) {
                 <textarea id="message" name="message" rows="4" maxlength="3000" placeholder="<?= e(__('field_message_ph')) ?>"></textarea>
             </div>
             <label class="check">
-                <input type="checkbox" name="consent" value="1" required>
+                <input type="checkbox" name="consent" value="1" required aria-describedby="err-consent">
                 <span><?= e(__('consent')) ?>: <a href="<?= e(lang_url('/privacy')) ?>" target="_blank" rel="noopener"><?= e(__('consent_link')) ?></a> *</span>
             </label>
-            <button class="btn btn-primary btn-block" type="submit" id="leadSubmit"><?= e(__('submit')) ?></button>
+            <p class="field-error" id="err-consent" hidden></p>
+            <button class="btn btn-primary btn-block" type="submit" id="leadSubmit" data-label="<?= e(__('submit')) ?>">
+                <?= e(__('submit')) ?>
+            </button>
         </form>
     </div>
 </section>

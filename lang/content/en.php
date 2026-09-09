@@ -83,4 +83,10 @@ return [
         ['q' => 'How is payment handled?', 'a' => 'One-off tasks by estimate. Packages and subscriptions — fixed price with clear scope.'],
         ['q' => 'Do you provide access and docs?', 'a' => 'Yes. I hand over access, a short change log and operating recommendations.'],
     ],
+    'seo' => [
+        'home' => [
+            'title' => 'IT solutions for business — BizDevOps',
+            'description' => 'Websites, VPS, DevOps, security and support. Direct work, clear estimate, reply within 1–2 hours.',
+        ],
+    ],
 ];

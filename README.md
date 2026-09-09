@@ -181,6 +181,19 @@ deploy/          # пример Apache vhost
 - Блокировка брутфорса логина
 - Security headers в приложении
 
+## CHANGELOG (оптимизация bizdevops.site)
+
+- Каноникал / sitemap / hreflang / JSON-LD / robots — только `https://bizdevops.site` (`settings.public_url` + `APP_URL`)
+- 301 с `proflanding.1tlt.ru` на тот же путь bizdevops.site
+- Mobile header: лого + бургер; языки и CTA внутри меню
+- Цены: ₽ основной оффер, USD мелкой подписью; убран акцент на курсе ЦБ в UI
+- Фото специалиста из админки; SVG-заглушка без «пустого человечка»
+- CRUD кейсов в `/admin/portfolio`; пустая секция скрыта
+- Блок доверия (формат / SLA / не беру), FAQ accordion a11y, форма с field-errors + loading
+- Legal pages в layout лендинга, контакты из settings (без example.com)
+- Системный стек шрифтов (без Google Fonts), кэш статики в `.htaccess`
+- Миграция: `database/migrate_optimize.sql`
+
 ## Git
 
 ```bash

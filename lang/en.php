@@ -49,7 +49,11 @@ return [
     'step4_d' => 'Optional subscription support after launch.',
 
     'stack_title' => 'Cases & stack',
+    'stack_title_only' => 'Stack',
     'stack_sub' => 'A practical stack for business — no hype for hype’s sake.',
+    'cases_title' => 'Case studies',
+    'cases_sub' => 'Real tasks and measurable outcomes.',
+    'case_link' => 'View project',
 
     'faq_title' => 'FAQ',
     'faq_sub' => 'Common questions before we start.',
@@ -72,6 +76,11 @@ return [
     'consent' => 'I agree to personal data processing',
     'consent_link' => 'personal data processing',
     'submit' => 'Submit request',
+    'submitting' => 'Sending…',
+    'discuss' => 'Discuss the task',
+    'trust_block_title' => 'How I work',
+    'not_doing_title' => 'What I don’t take',
+    'usd_hint' => 'USD estimate',
     'lead_ok' => 'Thank you! Your request was sent. I will contact you soon.',
     'lead_err' => 'Could not submit the request',
     'lead_network' => 'Network unavailable. Please try again.',

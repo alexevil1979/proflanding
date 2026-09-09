@@ -15,6 +15,7 @@
     <a href="/admin/leads">Заявки</a>
     <a href="/admin/services">Услуги</a>
     <a href="/admin/packages">Пакеты</a>
+    <a href="/admin/portfolio">Кейсы</a>
     <a href="/admin/settings">Контент</a>
     <a href="/admin/seo">SEO</a>
     <a href="/admin/notifications">Уведомления</a>

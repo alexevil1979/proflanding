@@ -15,6 +15,7 @@ use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\SeoController;
 use App\Controllers\Admin\NotificationsController;
 use App\Controllers\Admin\PasswordController;
+use App\Controllers\Admin\PortfolioController;
 
 /** @var \App\Core\Router $router */
 
@@ -49,6 +50,13 @@ $router->post('/admin/packages/create', [PackagesController::class, 'store']);
 $router->get('/admin/packages/{id}/edit', [PackagesController::class, 'edit']);
 $router->post('/admin/packages/{id}/edit', [PackagesController::class, 'update']);
 $router->post('/admin/packages/{id}/delete', [PackagesController::class, 'delete']);
+
+$router->get('/admin/portfolio', [PortfolioController::class, 'index']);
+$router->get('/admin/portfolio/create', [PortfolioController::class, 'create']);
+$router->post('/admin/portfolio/create', [PortfolioController::class, 'store']);
+$router->get('/admin/portfolio/{id}/edit', [PortfolioController::class, 'edit']);
+$router->post('/admin/portfolio/{id}/edit', [PortfolioController::class, 'update']);
+$router->post('/admin/portfolio/{id}/delete', [PortfolioController::class, 'delete']);
 
 $router->get('/admin/settings', [SettingsController::class, 'edit']);
 $router->post('/admin/settings', [SettingsController::class, 'update']);

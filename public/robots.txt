@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin/
+Disallow: /thank-you
+Disallow: /thank-you/
 
 Sitemap: https://bizdevops.site/sitemap.xml

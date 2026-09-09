@@ -13,6 +13,7 @@ final class App
         mb_internal_encoding('UTF-8');
 
         Auth::startSession();
+        self::canonicalHostRedirect();
         self::securityHeaders();
 
         Lang::boot($root);
@@ -22,6 +23,17 @@ final class App
         $router->dispatch(Request::method(), Request::uri());
     }
 
+    private static function canonicalHostRedirect(): void
+    {
+        $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
+        if ($host === '' || str_contains($host, 'proflanding.1tlt.ru') === false) {
+            return;
+        }
+        $uri = (string)($_SERVER['REQUEST_URI'] ?? '/');
+        header('Location: https://bizdevops.site' . $uri, true, 301);
+        exit;
+    }
+
     private static function securityHeaders(): void
     {
         header('X-Frame-Options: SAMEORIGIN');
@@ -29,5 +41,8 @@ final class App
         header('Referrer-Policy: strict-origin-when-cross-origin');
         header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
         header('X-XSS-Protection: 0');
+        if (Request::isHttps()) {
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        }
     }
 }

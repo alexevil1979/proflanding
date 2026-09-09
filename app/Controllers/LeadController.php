@@ -69,11 +69,17 @@ final class LeadController
 
         $serviceId = $data['service_id'] !== null && $data['service_id'] !== '' ? (int)$data['service_id'] : null;
         $packageId = $data['package_id'] !== null && $data['package_id'] !== '' ? (int)$data['package_id'] : null;
-        if ($serviceId && !Service::find($serviceId)) {
-            $serviceId = null;
+        if ($serviceId) {
+            $svc = Service::find($serviceId);
+            if (!$svc || empty($svc['is_active'])) {
+                $serviceId = null;
+            }
         }
-        if ($packageId && !Package::find($packageId)) {
-            $packageId = null;
+        if ($packageId) {
+            $pkg = Package::find($packageId);
+            if (!$pkg || empty($pkg['is_active'])) {
+                $packageId = null;
+            }
         }
 
         $leadId = Lead::create([
