@@ -34,12 +34,20 @@ nano .env
 ### База данных
 
 ```bash
+Создайте БД от **root** (или пропишите того же пользователя в `.env` как `DB_USER=root`):
+
+```bash
 mysql -u root -p -e "CREATE DATABASE proflanding CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 mysql -u root -p proflanding < database/schema.sql
 mysql -u root -p proflanding < database/seed.sql
 ```
 
-Создайте пользователя БД и пропишите его в `.env`.
+В `.env`:
+
+```
+DB_USER=root
+DB_PASS=пароль_root
+```
 
 ### .env (обязательно)
 
