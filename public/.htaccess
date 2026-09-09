@@ -3,9 +3,11 @@ RewriteEngine On
 # Secrets
 RewriteRule ^\.env - [F,L]
 
-# Front controller
+# Не зацикливать front controller
+RewriteRule ^index\.php$ - [L]
+
+# Все не-файлы (включая /) — в index.php
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [L]
 
 # Cache static assets

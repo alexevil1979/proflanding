@@ -32,11 +32,7 @@ final class Router
 
     public function dispatch(string $method, string $uri): void
     {
-        $path = parse_url($uri, PHP_URL_PATH) ?: '/';
-        $path = rawurldecode($path);
-        if ($path !== '/' && str_ends_with($path, '/')) {
-            $path = rtrim($path, '/') ?: '/';
-        }
+        $path = $this->normalizePath($uri);
 
         foreach ($this->routes as $route) {
             if ($route['method'] !== strtoupper($method)) {
@@ -70,5 +66,32 @@ final class Router
             return;
         }
         $handler(...array_values($params));
+    }
+
+    /**
+     * Apache DirectoryIndex / php-fpm часто отдают URI как /index.php.
+     */
+    private function normalizePath(string $uri): string
+    {
+        $path = parse_url($uri, PHP_URL_PATH);
+        if (!is_string($path) || $path === '') {
+            $path = '/';
+        }
+        $path = rawurldecode($path);
+
+        if ($path === '/index.php' || str_starts_with($path, '/index.php/')) {
+            $path = substr($path, strlen('/index.php')) ?: '/';
+        }
+
+        // PATH_INFO (если proxy_fcgi прокинул)
+        if ($path === '/' && !empty($_SERVER['PATH_INFO'])) {
+            $path = (string)$_SERVER['PATH_INFO'];
+        }
+
+        if ($path !== '/' && str_ends_with($path, '/')) {
+            $path = rtrim($path, '/') ?: '/';
+        }
+
+        return $path === '' ? '/' : $path;
     }
 }
