@@ -90,9 +90,12 @@ DirectoryIndex index.php
 
 ```bash
 sudo a2enmod rewrite proxy proxy_fcgi headers expires deflate ssl
+# Сначала только HTTP (:80). SSL-пути в конфиге до certbot — нельзя.
 sudo cp /ssd/www/proflanding/deploy/apache-vhost.conf.example /etc/apache2/sites-available/proflanding.conf
 sudo a2ensite proflanding.conf
 sudo apache2ctl configtest && sudo systemctl reload apache2
+
+# DNS A-запись proflanding.1tlt.ru → IP сервера уже должна указывать сюда
 sudo certbot --apache -d proflanding.1tlt.ru
 
 # PHP-FPM (сервис из сорцов):
