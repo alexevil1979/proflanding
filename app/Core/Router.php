@@ -32,10 +32,13 @@ final class Router
 
     public function dispatch(string $method, string $uri): void
     {
+        $method = strtoupper($method);
+        // curl -I и балансировщики шлют HEAD — отвечаем теми же маршрутами, что и GET
+        $matchMethod = $method === 'HEAD' ? 'GET' : $method;
         $path = $this->normalizePath($uri);
 
         foreach ($this->routes as $route) {
-            if ($route['method'] !== strtoupper($method)) {
+            if ($route['method'] !== $matchMethod) {
                 continue;
             }
             if (!preg_match($route['pattern'], $path, $matches)) {
@@ -47,11 +50,20 @@ final class Router
                     $params[$k] = $v;
                 }
             }
+            if ($method === 'HEAD') {
+                ob_start();
+                $this->invoke($route['handler'], $params);
+                ob_end_clean();
+                return;
+            }
             $this->invoke($route['handler'], $params);
             return;
         }
 
         http_response_code(404);
+        if ($method === 'HEAD') {
+            return;
+        }
         View::render('errors/404', [
             'title' => 'Страница не найдена',
         ], 'layouts/main');
