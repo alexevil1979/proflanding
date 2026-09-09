@@ -41,7 +41,7 @@ mysql -u root -p proflanding < database/seed.sql
 
 ### .env (обязательно)
 
-- `APP_URL` — https://ваш-домен
+- `APP_URL` — https://proflanding.1tlt.ru
 - `APP_KEY` — случайная строка 32+ символов
 - `DB_*` — доступ к MySQL
 - `SMTP_*` — Gmail + **App Password**
@@ -84,16 +84,18 @@ DirectoryIndex index.php
 # Ubuntu/Debian
 sudo apt install php8.2 php8.2-mysql apache2
 sudo a2enmod rewrite headers expires deflate ssl
-# скопируйте vhost, замените DOMAIN, затем:
-sudo certbot --apache -d DOMAIN
-sudo systemctl reload apache2
+# vhost уже под proflanding.1tlt.ru:
+sudo cp deploy/apache-vhost.conf.example /etc/apache2/sites-available/proflanding.conf
+sudo a2ensite proflanding.conf
+sudo apache2ctl configtest && sudo systemctl reload apache2
+sudo certbot --apache -d proflanding.1tlt.ru
 ```
 
 Если DocumentRoot нельзя сменить на `public/`, корневые `index.php` + `.htaccess` проксируют в `public/`.
 
 ## Первый вход в админку
 
-URL: `https://DOMAIN/admin/login`
+URL: `https://proflanding.1tlt.ru/admin/login`
 
 Из seed:
 
