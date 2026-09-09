@@ -1,0 +1,14 @@
+# После certbot: /etc/apache2/sites-available/proflanding-le-ssl.conf
+# Убедитесь, что в :443 есть PHP-FPM и DocumentRoot на public/.
+# Пример фрагмента (certbot обычно копирует из :80):
+
+# DocumentRoot /ssd/www/proflanding/public
+# <Directory /ssd/www/proflanding/public>
+#     AllowOverride All
+#     Require all granted
+#     DirectoryIndex index.php
+#     Options -Indexes +FollowSymLinks
+# </Directory>
+# <FilesMatch "\.php$">
+#     SetHandler "proxy:fcgi://127.0.0.1:9000"
+# </FilesMatch>
