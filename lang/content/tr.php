@@ -10,7 +10,6 @@ return [
     'site_tagline' => 'Geliştirme, yönetim, DevOps ve güvenlik — anahtar teslim veya abonelik',
     'hero_offer' => 'Gereksiz bürokrasi olmadan işletmeler için IT çözümleri',
     'hero_sub' => 'Doğrudan çalışırım; aracı ve belirsiz süre yok. Net plan, şeffaf fiyat, sonuç sorumluluğu.',
-    'city' => 'Moskova / uzaktan',
     'services' => [
         'site-support' => $svc('Site bakımı', 'WordPress, Bitrix ve özel PHP: güncelleme, düzeltme, hız, yedek.'),
         'landing-dev' => $svc('Landing ve web servisleri', 'Temiz PHP 8.2 + MySQL: landing, panel, form, entegrasyon.'),

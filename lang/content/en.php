@@ -8,7 +8,6 @@ return [
     'site_tagline' => 'Development, administration, DevOps and security — turnkey or subscription',
     'hero_offer' => 'IT solutions for business without unnecessary bureaucracy',
     'hero_sub' => 'I work directly, no middlemen or vague deadlines. Clear plan, transparent price, ownership of the result.',
-    'city' => 'Moscow / remote',
     'services' => [
         'site-support' => [
             'title' => 'Website maintenance',

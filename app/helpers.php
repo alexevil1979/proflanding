@@ -69,11 +69,23 @@ function setting(string $key, string $default = ''): string
     if ($cache === null) {
         $cache = \App\Models\Setting::all();
     }
-    // Перевод контентных ключей из lang/content/{lang}.php
-    $translated = \App\Core\Lang::content($key);
-    if ($translated !== '') {
-        return $translated;
+
+    // Эти поля всегда из админки — не перекрывать lang/content/*
+    $fromAdminOnly = [
+        'city', 'phone', 'email', 'telegram', 'whatsapp',
+        'experience_years', 'projects_count', 'response_hours',
+        'site_name', 'site_name_latin', 'yandex_metrika', 'google_analytics',
+        'usd_rate', 'usd_rate_updated_at', 'telegram_enabled', 'mail_enabled',
+        'notify_tpl_email_subject', 'avatar_path', 'og_image',
+    ];
+
+    if (!in_array($key, $fromAdminOnly, true)) {
+        $translated = \App\Core\Lang::content($key);
+        if ($translated !== '') {
+            return $translated;
+        }
     }
+
     return isset($cache[$key]) && $cache[$key] !== null && $cache[$key] !== ''
         ? (string)$cache[$key]
         : $default;

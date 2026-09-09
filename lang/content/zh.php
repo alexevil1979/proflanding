@@ -10,7 +10,6 @@ return [
     'site_tagline' => '开发、运维、DevOps 与安全 — 交钥匙或订阅制',
     'hero_offer' => '为企业提供无冗余官僚流程的 IT 方案',
     'hero_sub' => '直接合作，无中介、无模糊工期。清晰计划、透明报价、对结果负责。',
-    'city' => '莫斯科 / 远程',
     'services' => [
         'site-support' => $svc('网站维护', 'WordPress、Bitrix 与自研 PHP：更新、修复、加速、备份。'),
         'landing-dev' => $svc('落地页与 Web 服务', '纯 PHP 8.2 + MySQL：落地页、后台、表单与集成。'),
