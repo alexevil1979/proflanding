@@ -181,6 +181,10 @@ deploy/          # пример Apache vhost
 - Блокировка брутфорса логина
 - Security headers в приложении
 
+## Документация
+
+- [План размещения в поисковиках](docs/seo-indexing-plan.md) — Яндекс / Google, sitemap, зеркала, календарь на 30 дней
+
 ## CHANGELOG (оптимизация bizdevops.site)
 
 - Каноникал / sitemap / hreflang / JSON-LD / robots — только `https://bizdevops.site` (`settings.public_url` + `APP_URL`)
