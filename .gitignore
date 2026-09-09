@@ -7,6 +7,8 @@ storage/cache/*
 !storage/cache/.gitkeep
 storage/uploads/*
 !storage/uploads/.gitkeep
+public/uploads/*
+!public/uploads/.gitkeep
 .DS_Store
 Thumbs.db
 *.log

@@ -1,6 +1,4 @@
 <?php use App\Core\Csrf; $s = $settings; ?>
-<?php if (!empty($flash_ok)): ?><div class="alert ok"><?= e($flash_ok) ?></div><?php endif; ?>
-<?php if (!empty($flash_error)): ?><div class="alert err"><?= e($flash_error) ?></div><?php endif; ?>
 <form method="post" action="/admin/settings" class="form-grid" enctype="multipart/form-data">
     <?= Csrf::field() ?>
     <label>Публичный URL (каноникал)<input name="public_url" value="<?= e($s['public_url'] ?? 'https://bizdevops.site') ?>" placeholder="https://bizdevops.site"></label>

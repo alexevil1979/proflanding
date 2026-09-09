@@ -90,8 +90,9 @@ final class SettingsController
         if (empty($_FILES[$field]['tmp_name']) || !is_uploaded_file($_FILES[$field]['tmp_name'])) {
             return null;
         }
-        if (($_FILES[$field]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
-            flash('error', 'Ошибка загрузки файла');
+        $code = (int)($_FILES[$field]['error'] ?? UPLOAD_ERR_NO_FILE);
+        if ($code !== UPLOAD_ERR_OK) {
+            flash('error', 'Ошибка загрузки файла (код ' . $code . '). Проверьте upload_max_filesize в PHP.');
             redirect('/admin/settings');
         }
         if (($_FILES[$field]['size'] ?? 0) > 3 * 1024 * 1024) {
@@ -106,19 +107,25 @@ final class SettingsController
             'image/webp' => 'webp',
         ];
         if (!isset($map[$mime])) {
-            flash('error', 'Допустимы только JPG/PNG/WebP');
+            flash('error', 'Допустимы только JPG/PNG/WebP (сейчас: ' . $mime . ')');
             redirect('/admin/settings');
         }
         $name = bin2hex(random_bytes(12)) . '.' . $map[$mime];
-        $dir = dirname(__DIR__, 3) . '/public/uploads';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-        $dest = $dir . '/' . $name;
-        if (!move_uploaded_file($_FILES[$field]['tmp_name'], $dest)) {
-            flash('error', 'Не удалось сохранить файл');
+        $dir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads';
+        if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
+            flash('error', 'Нет каталога uploads и не удалось создать: ' . $dir);
             redirect('/admin/settings');
         }
+        if (!is_writable($dir)) {
+            flash('error', 'Каталог uploads недоступен для записи. Выполните: chown -R www-data:www-data public/uploads && chmod 775 public/uploads');
+            redirect('/admin/settings');
+        }
+        $dest = $dir . DIRECTORY_SEPARATOR . $name;
+        if (!@move_uploaded_file($_FILES[$field]['tmp_name'], $dest)) {
+            flash('error', 'Не удалось сохранить файл в ' . $dir . ' (права PHP-FPM)');
+            redirect('/admin/settings');
+        }
+        @chmod($dest, 0644);
         return '/uploads/' . $name;
     }
 }
