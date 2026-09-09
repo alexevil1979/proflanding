@@ -28,6 +28,14 @@ return [
         'token' => $_ENV['TELEGRAM_BOT_TOKEN'] ?? '',
         'chat_id' => $_ENV['TELEGRAM_CHAT_ID'] ?? '',
         'enabled' => (($_ENV['TELEGRAM_ENABLED'] ?? '1') === '1'),
+        'proxy' => [
+            'enabled' => (($_ENV['TELEGRAM_PROXY_ENABLED'] ?? '0') === '1'),
+            'type' => $_ENV['TELEGRAM_PROXY_TYPE'] ?? 'socks5',
+            'host' => $_ENV['TELEGRAM_PROXY_HOST'] ?? '',
+            'port' => (int)($_ENV['TELEGRAM_PROXY_PORT'] ?? 1080),
+            'user' => $_ENV['TELEGRAM_PROXY_USER'] ?? '',
+            'pass' => $_ENV['TELEGRAM_PROXY_PASS'] ?? '',
+        ],
     ],
     'mail_enabled' => (($_ENV['MAIL_ENABLED'] ?? '1') === '1'),
     'rate_limit' => [

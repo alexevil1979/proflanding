@@ -78,6 +78,8 @@ function setting(string $key, string $default = ''): string
         'usd_rate', 'usd_rate_updated_at', 'telegram_enabled', 'mail_enabled',
         'notify_tpl_email_subject', 'avatar_path', 'og_image',
         'telegram_bot_token', 'telegram_chat_id',
+        'telegram_proxy_enabled', 'telegram_proxy_type', 'telegram_proxy_host',
+        'telegram_proxy_port', 'telegram_proxy_user', 'telegram_proxy_pass',
         'smtp_host', 'smtp_port', 'smtp_secure', 'smtp_user', 'smtp_pass',
         'smtp_from', 'smtp_from_name', 'smtp_to',
     ];

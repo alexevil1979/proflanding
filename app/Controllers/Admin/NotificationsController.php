@@ -30,6 +30,7 @@ final class NotificationsController
             'resolved' => $resolved,
             'has_smtp_pass' => NotifyConfig::hasSmtpPass(),
             'has_tg_token' => NotifyConfig::hasTelegramToken(),
+            'has_tg_proxy_pass' => NotifyConfig::hasTelegramProxyPass(),
             'logs' => NotificationLog::recent(30),
             'flash_ok' => flash('ok'),
             'flash_error' => flash('error'),
@@ -41,11 +42,21 @@ final class NotificationsController
         Auth::requireLogin();
         Csrf::requireValid();
 
+        $proxyType = trim((string)Request::input('telegram_proxy_type', 'socks5'));
+        if (!in_array($proxyType, ['http', 'https', 'socks5', 'socks5h', 'socks4'], true)) {
+            $proxyType = 'socks5';
+        }
+
         $pairs = [
             'telegram_enabled' => Request::input('telegram_enabled') ? '1' : '0',
             'mail_enabled' => Request::input('mail_enabled') ? '1' : '0',
             'notify_tpl_email_subject' => trim((string)Request::input('notify_tpl_email_subject', '')),
             'telegram_chat_id' => trim((string)Request::input('telegram_chat_id', '')),
+            'telegram_proxy_enabled' => Request::input('telegram_proxy_enabled') ? '1' : '0',
+            'telegram_proxy_type' => $proxyType,
+            'telegram_proxy_host' => trim((string)Request::input('telegram_proxy_host', '')),
+            'telegram_proxy_port' => trim((string)Request::input('telegram_proxy_port', '1080')),
+            'telegram_proxy_user' => trim((string)Request::input('telegram_proxy_user', '')),
             'smtp_host' => trim((string)Request::input('smtp_host', 'smtp.gmail.com')),
             'smtp_port' => trim((string)Request::input('smtp_port', '587')),
             'smtp_secure' => trim((string)Request::input('smtp_secure', 'tls')),
@@ -63,6 +74,11 @@ final class NotificationsController
         $smtpPass = (string)Request::input('smtp_pass', '');
         if ($smtpPass !== '') {
             $pairs['smtp_pass'] = $smtpPass;
+        }
+
+        $proxyPass = (string)Request::input('telegram_proxy_pass', '');
+        if ($proxyPass !== '') {
+            $pairs['telegram_proxy_pass'] = $proxyPass;
         }
 
         Setting::setMany($pairs);

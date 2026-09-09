@@ -31,6 +31,30 @@ $tg = $resolved['telegram'] ?? [];
     </fieldset>
 
     <fieldset>
+        <legend>Прокси для Telegram API</legend>
+        <?php $px = $tg['proxy'] ?? []; ?>
+        <label class="check">
+            <input type="checkbox" name="telegram_proxy_enabled" value="1"<?= !empty($px['enabled']) ? ' checked' : '' ?>>
+            Использовать прокси для api.telegram.org
+        </label>
+        <label>Тип
+            <select name="telegram_proxy_type">
+                <?php foreach (['socks5' => 'SOCKS5', 'socks5h' => 'SOCKS5h (DNS через прокси)', 'socks4' => 'SOCKS4', 'http' => 'HTTP', 'https' => 'HTTPS'] as $k => $lab): ?>
+                <option value="<?= $k ?>"<?= ($px['type'] ?? 'socks5') === $k ? ' selected' : '' ?>><?= e($lab) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </label>
+        <label>Host<input name="telegram_proxy_host" value="<?= e($px['host'] ?? '') ?>" placeholder="127.0.0.1"></label>
+        <label>Port<input type="number" name="telegram_proxy_port" value="<?= e((string)($px['port'] ?? '1080')) ?>"></label>
+        <label>User (опционально)<input name="telegram_proxy_user" value="<?= e($px['user'] ?? '') ?>" autocomplete="off"></label>
+        <label>Password
+            <input type="password" name="telegram_proxy_pass" value="" autocomplete="new-password"
+                   placeholder="<?= !empty($has_tg_proxy_pass) ? '•••••••• (оставьте пустым, чтобы не менять)' : 'пароль прокси' ?>">
+        </label>
+        <p class="muted">Для SOCKS нужен PHP cURL. HTTP-прокси работает и без curl.</p>
+    </fieldset>
+
+    <fieldset>
         <legend>SMTP (Gmail)</legend>
         <label>SMTP host<input name="smtp_host" value="<?= e($smtp['host'] ?? 'smtp.gmail.com') ?>"></label>
         <label>Port<input type="number" name="smtp_port" value="<?= e((string)($smtp['port'] ?? '587')) ?>"></label>

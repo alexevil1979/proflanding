@@ -29,10 +29,27 @@ final class NotifyConfig
 
     public static function telegram(): array
     {
+        $envProxy = Config::get('telegram.proxy', []);
         return [
             'token' => self::pref('telegram_bot_token', (string)Config::get('telegram.token', '')),
             'chat_id' => self::pref('telegram_chat_id', (string)Config::get('telegram.chat_id', '')),
+            'proxy' => [
+                'enabled' => Setting::get(
+                    'telegram_proxy_enabled',
+                    !empty($envProxy['enabled']) ? '1' : '0'
+                ) === '1',
+                'type' => self::pref('telegram_proxy_type', (string)($envProxy['type'] ?? 'socks5')),
+                'host' => self::pref('telegram_proxy_host', (string)($envProxy['host'] ?? '')),
+                'port' => (int)self::pref('telegram_proxy_port', (string)($envProxy['port'] ?? '1080')),
+                'user' => self::pref('telegram_proxy_user', (string)($envProxy['user'] ?? '')),
+                'pass' => self::pref('telegram_proxy_pass', (string)($envProxy['pass'] ?? '')),
+            ],
         ];
+    }
+
+    public static function hasTelegramProxyPass(): bool
+    {
+        return self::telegram()['proxy']['pass'] !== '';
     }
 
     public static function telegramEnabled(): bool
