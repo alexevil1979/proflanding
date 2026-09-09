@@ -186,8 +186,6 @@ html[data-theme="dark"] .stats-grid { background: #0b1220; }
 .stat span { color: #1e293b; font-size: .9rem; font-weight: 600; }
 html[data-theme="dark"] .stat strong { color: #ffffff; }
 html[data-theme="dark"] .stat span { color: #e2e8f0; }
-.stats-grid { background: #ffffff; }
-html[data-theme="dark"] .stats-grid { background: #0b1220; }
 
 .trust-grid { display: grid; gap: 1rem; }
 .trust-card {
