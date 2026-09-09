@@ -8,8 +8,9 @@ final class Telegram
 {
     public function sendMessage(string $text, ?string $chatId = null): array
     {
-        $token = (string)Config::get('telegram.token', '');
-        $chat = $chatId ?: (string)Config::get('telegram.chat_id', '');
+        $cfg = \App\Services\NotifyConfig::telegram();
+        $token = (string)($cfg['token'] ?? '');
+        $chat = $chatId ?: (string)($cfg['chat_id'] ?? '');
         if ($token === '' || $chat === '') {
             return ['ok' => false, 'response' => 'Telegram не настроен'];
         }

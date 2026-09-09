@@ -82,6 +82,12 @@ a:hover { text-decoration: underline; }
 .nav { display: none; gap: 1.1rem; }
 .nav a { color: var(--muted); font-weight: 500; text-decoration: none; }
 .nav a:hover { color: var(--text); }
+.brand-text bdi,
+.eyebrow bdi,
+.portrait-meta bdi,
+.footer-copy bdi {
+  unicode-bidi: isolate;
+}
 .header-actions { display: flex; align-items: center; gap: .6rem; }
 .lang-switch {
   display: flex; flex-wrap: wrap; gap: .2rem; align-items: center;

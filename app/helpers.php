@@ -77,6 +77,9 @@ function setting(string $key, string $default = ''): string
         'site_name', 'site_name_latin', 'yandex_metrika', 'google_analytics',
         'usd_rate', 'usd_rate_updated_at', 'telegram_enabled', 'mail_enabled',
         'notify_tpl_email_subject', 'avatar_path', 'og_image',
+        'telegram_bot_token', 'telegram_chat_id',
+        'smtp_host', 'smtp_port', 'smtp_secure', 'smtp_user', 'smtp_pass',
+        'smtp_from', 'smtp_from_name', 'smtp_to',
     ];
 
     if (!in_array($key, $fromAdminOnly, true)) {

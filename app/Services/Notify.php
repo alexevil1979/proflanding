@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Core\Config;
 use App\Core\Logger;
 use App\Core\Mailer;
 use App\Core\Telegram;
@@ -21,10 +20,8 @@ final class Notify
             return;
         }
 
-        $tgEnabled = Setting::get('telegram_enabled', Config::get('telegram.enabled') ? '1' : '0') === '1'
-            && Config::get('telegram.enabled');
-        $mailEnabled = Setting::get('mail_enabled', Config::get('mail_enabled') ? '1' : '0') === '1'
-            && Config::get('mail_enabled');
+        $tgEnabled = NotifyConfig::telegramEnabled();
+        $mailEnabled = NotifyConfig::mailEnabled();
 
         if ($tgEnabled) {
             self::sendTelegram($lead);
@@ -52,7 +49,7 @@ final class Notify
 
     public static function sendEmail(array $lead): array
     {
-        $to = (string)Config::get('smtp.to', '');
+        $to = NotifyConfig::smtp()['to'];
         $subjectTpl = Setting::get('notify_tpl_email_subject', 'Новая заявка с лендинга #{id}');
         $subject = str_replace('{id}', (string)$lead['id'], $subjectTpl);
         $html = self::emailHtml($lead);
@@ -81,7 +78,7 @@ final class Notify
 
     public static function testEmail(): array
     {
-        $to = (string)Config::get('smtp.to', '');
+        $to = NotifyConfig::smtp()['to'];
         $html = '<p>Тестовое письмо с лендинга IT-специалиста.</p><p>Время: ' . date('d.m.Y H:i') . '</p>';
         $result = (new Mailer())->send($to, 'Тест SMTP с лендинга', $html, 'Тестовое письмо');
         NotificationLog::add(null, 'email', $result['ok'] ? 'ok' : 'fail', (string)$result['response']);

@@ -11,13 +11,16 @@ final class Mailer
 {
     public function send(string $to, string $subject, string $html, string $text = ''): array
     {
-        $cfg = Config::get('smtp', []);
+        $cfg = \App\Services\NotifyConfig::smtp();
         $host = (string)($cfg['host'] ?? 'smtp.gmail.com');
         $port = (int)($cfg['port'] ?? 587);
         $user = (string)($cfg['user'] ?? '');
         $pass = (string)($cfg['pass'] ?? '');
         $from = (string)($cfg['from'] ?? $user);
         $fromName = (string)($cfg['from_name'] ?? 'IT Specialist');
+        if ($to === '') {
+            $to = (string)($cfg['to'] ?? '');
+        }
 
         if ($to === '' || $user === '' || $pass === '' || $from === '') {
             return ['ok' => false, 'response' => 'SMTP не настроен'];
