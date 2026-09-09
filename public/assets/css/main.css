@@ -173,18 +173,21 @@ html[data-theme="dark"] .btn-primary { color: #042f2e; }
 .stats { padding: 0 0 1rem; }
 .stats-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  background: #ffffff; border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow); overflow: hidden;
 }
+html[data-theme="dark"] .stats-grid { background: #0b1220; }
 .stat { padding: 1.2rem 1rem; text-align: center; border-right: 1px solid var(--line); }
 .stat:last-child { border-right: 0; }
 .stat strong {
   display: block; font-size: 1.55rem; font-weight: 800; letter-spacing: -.02em;
-  color: #0f172a;
+  color: #000000;
 }
-.stat span { color: #475569; font-size: .9rem; font-weight: 600; }
-html[data-theme="dark"] .stat strong { color: #f8fafc; }
-html[data-theme="dark"] .stat span { color: #94a3b8; }
+.stat span { color: #1e293b; font-size: .9rem; font-weight: 600; }
+html[data-theme="dark"] .stat strong { color: #ffffff; }
+html[data-theme="dark"] .stat span { color: #e2e8f0; }
+.stats-grid { background: #ffffff; }
+html[data-theme="dark"] .stats-grid { background: #0b1220; }
 
 .trust-grid { display: grid; gap: 1rem; }
 .trust-card {
@@ -380,11 +383,16 @@ html[data-theme="dark"] .package-ribbon { color: #042f2e; }
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .lang-desktop, .header-cta-desktop { display: none !important; }
+  /* У самого низа экрана — не перекрывают hero-CTA по центру */
   .float-messengers {
-    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+    bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+    right: 0.65rem;
+    z-index: 25;
   }
-  .section-cta { padding-bottom: 5.5rem; }
-  .site-footer { padding-bottom: 4.5rem; }
+  .float-btn { width: 44px; height: 44px; }
+  .section-cta { padding-bottom: 5rem; }
+  .site-footer { padding-bottom: 4rem; }
+  .hero-cta { padding-right: 3.5rem; }
 }
 
 @media (max-width: 640px) {

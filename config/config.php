@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'env' => $_ENV['APP_ENV'] ?? 'production',
-    'url' => rtrim($_ENV['APP_URL'] ?? '', '/'),
+    'url' => rtrim($_ENV['APP_URL'] ?? 'https://bizdevops.site', '/'),
     'key' => $_ENV['APP_KEY'] ?? '',
     'timezone' => 'Europe/Moscow',
     'db' => [

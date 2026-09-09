@@ -26,7 +26,7 @@ final class App
     private static function canonicalHostRedirect(): void
     {
         $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
-        if ($host === '' || str_contains($host, 'proflanding.1tlt.ru') === false) {
+        if ($host === '' || !str_contains($host, '1tlt.ru')) {
             return;
         }
         $uri = (string)($_SERVER['REQUEST_URI'] ?? '/');

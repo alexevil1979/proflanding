@@ -142,20 +142,22 @@ function package_features(array $package): array
 
 function app_url(string $path = ''): string
 {
-    $base = rtrim((string)\App\Core\Config::get('url', ''), '/');
+    $canonical = 'https://bizdevops.site';
+    $base = '';
     try {
-        $pub = \App\Models\Setting::get('public_url', '');
+        $pub = trim((string)\App\Models\Setting::get('public_url', ''));
         if ($pub !== '') {
             $base = rtrim($pub, '/');
         }
     } catch (\Throwable $e) {
     }
     if ($base === '') {
-        $scheme = \App\Core\Request::isHttps() ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $base = $scheme . '://' . $host;
+        $base = rtrim((string)\App\Core\Config::get('url', ''), '/');
     }
-    $base = preg_replace('#^https?://proflanding\.1tlt\.ru#i', 'https://bizdevops.site', $base) ?? $base;
+    if ($base === '' || preg_match('#1tlt\.ru#i', $base) || preg_match('#example\.com#i', $base)) {
+        $base = $canonical;
+    }
+    $base = preg_replace('#^https?://(www\.)?bizdevops\.site#i', $canonical, $base) ?? $base;
     $base = rtrim($base, '/');
     if ($path === '' || $path === '/') {
         return $base . '/';
@@ -170,6 +172,9 @@ function media_url(?string $path): string
         return '';
     }
     if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        if (preg_match('#1tlt\.ru#i', $path)) {
+            return preg_replace('#https?://[^/]*1tlt\.ru#i', 'https://bizdevops.site', $path) ?? app_url('/');
+        }
         return $path;
     }
     return app_url(ltrim($path, '/'));
