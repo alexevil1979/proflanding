@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'site_name' => 'Alexander M.',
     'site_role' => 'Multi-profile IT specialist',
     'site_tagline' => 'Development, administration, DevOps and security — turnkey or subscription',
     'hero_offer' => 'IT solutions for business without unnecessary bureaucracy',

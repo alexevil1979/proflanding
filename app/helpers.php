@@ -44,6 +44,25 @@ function period_label(string $period): string
     };
 }
 
+function brand_name(): string
+{
+    // RU — кириллица из настроек; остальные языки — латиница (не переводится)
+    if (\App\Core\Lang::code() === 'ru') {
+        return setting('site_name', 'Александр М.');
+    }
+    $fromLang = \App\Core\Lang::content('site_name');
+    if ($fromLang !== '') {
+        return $fromLang;
+    }
+    // админ может задать site_name_latin в настройках
+    static $cache = null;
+    if ($cache === null) {
+        $cache = \App\Models\Setting::all();
+    }
+    $latin = trim((string)($cache['site_name_latin'] ?? ''));
+    return $latin !== '' ? $latin : 'Alexander M.';
+}
+
 function setting(string $key, string $default = ''): string
 {
     static $cache = null;

@@ -7,6 +7,7 @@ ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash);
 
 INSERT INTO settings (k, v) VALUES
 ('site_name', 'Александр М.'),
+('site_name_latin', 'Alexander M.'),
 ('site_role', 'Многопрофильный IT-специалист'),
 ('site_tagline', 'Разработка, администрирование, DevOps и безопасность — под ключ и на абонентке'),
 ('hero_offer', 'Закрою IT-задачи бизнеса: от лендинга и VPS до интеграций, мониторинга и поддержки'),

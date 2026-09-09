@@ -4,7 +4,7 @@
 use App\Core\Lang;
 
 $settings = $settings ?? [];
-$pageTitle = $seo['title'] ?? (setting('site_name') . ' — ' . setting('site_role'));
+$pageTitle = $seo['title'] ?? (brand_name() . ' — ' . setting('site_role'));
 $pageDesc = $seo['description'] ?? setting('site_tagline');
 $ogTitle = $seo['og_title'] ?? $pageTitle;
 $ogDesc = $seo['og_description'] ?? $pageDesc;
@@ -70,7 +70,7 @@ $homePath = $pathNoLang === '/' || $pathNoLang === '' ? '/' : $pathNoLang;
         <a class="brand" href="<?= e(lang_url('/')) ?>">
             <span class="brand-mark" aria-hidden="true"></span>
             <span class="brand-text">
-                <strong><?= e(setting('site_name', 'IT Specialist')) ?></strong>
+                <strong><bdi dir="ltr"><?= e(brand_name()) ?></bdi></strong>
                 <small><?= e(setting('site_role')) ?></small>
             </span>
         </a>
@@ -107,7 +107,7 @@ $homePath = $pathNoLang === '/' || $pathNoLang === '' ? '/' : $pathNoLang;
 <footer class="site-footer">
     <div class="container footer-grid">
         <div>
-            <strong><?= e(setting('site_name')) ?></strong>
+            <strong><bdi dir="ltr"><?= e(brand_name()) ?></bdi></strong>
             <p><?= e(setting('site_tagline')) ?></p>
         </div>
         <div>
@@ -120,7 +120,7 @@ $homePath = $pathNoLang === '/' || $pathNoLang === '' ? '/' : $pathNoLang;
             <a href="<?= e(lang_url('/offer')) ?>"><?= e(__('footer_offer')) ?></a>
         </div>
     </div>
-    <div class="container footer-copy">© <?= date('Y') ?> <?= e(setting('site_name')) ?></div>
+    <div class="container footer-copy">© <?= date('Y') ?> <bdi dir="ltr"><?= e(brand_name()) ?></bdi></div>
 </footer>
 
 <?php if (setting('telegram') || setting('whatsapp')): ?>

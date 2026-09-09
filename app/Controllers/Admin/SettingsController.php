@@ -29,7 +29,7 @@ final class SettingsController
         Auth::requireLogin();
         Csrf::requireValid();
         $keys = [
-            'site_name', 'site_role', 'site_tagline', 'hero_offer', 'hero_sub',
+            'site_name', 'site_name_latin', 'site_role', 'site_tagline', 'hero_offer', 'hero_sub',
             'phone', 'email', 'telegram', 'whatsapp', 'city',
             'experience_years', 'projects_count', 'response_hours',
             'yandex_metrika', 'google_analytics', 'faq_json',

@@ -7,6 +7,7 @@ $svc = static function (string $t, string $s): array {
 };
 
 return [
+    'site_name' => 'Alexander M.',
     'site_role' => 'متخصص IT چندمهارته',
     'site_tagline' => 'توسعه، مدیریت سرور، DevOps و امنیت — کامل یا اشتراکی',
     'hero_offer' => 'راه‌حل‌های IT برای کسب‌وکار بدون بروکراسی اضافی',

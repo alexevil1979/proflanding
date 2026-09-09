@@ -5,6 +5,7 @@ declare(strict_types=1);
 $svc = static fn(string $t, string $s): array => ['title' => $t, 'short_text' => $s];
 
 return [
+    'site_name' => 'Alexander M.',
     'site_role' => 'Çok yönlü IT uzmanı',
     'site_tagline' => 'Geliştirme, yönetim, DevOps ve güvenlik — anahtar teslim veya abonelik',
     'hero_offer' => 'Gereksiz bürokrasi olmadan işletmeler için IT çözümleri',

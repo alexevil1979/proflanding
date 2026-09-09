@@ -1,7 +1,9 @@
 <?php use App\Core\Csrf; $s = $settings; ?>
 <form method="post" action="/admin/settings" class="form-grid">
     <?= Csrf::field() ?>
-    <label>Имя / бренд<input name="site_name" value="<?= e($s['site_name'] ?? '') ?>"></label>
+    <label>Имя / бренд (RU)<input name="site_name" value="<?= e($s['site_name'] ?? '') ?>"></label>
+    <label>Имя латиницей (EN/FA/ZH/TR/AR)<input name="site_name_latin" value="<?= e($s['site_name_latin'] ?? 'Alexander M.') ?>" placeholder="Alexander M."></label>
+    <p class="muted">На других языках имя не переводится — показывается транскрипт (латиница), чтобы в RTL не ломалась вёрстка (точка не уезжала в начало).</p>
     <label>Должность (RU)<input name="site_role" value="<?= e($s['site_role'] ?? '') ?>"></label>
     <label>Слоган (RU)<textarea name="site_tagline" rows="2"><?= e($s['site_tagline'] ?? '') ?></textarea></label>
     <label>Оффер / H1 (RU)<textarea name="hero_offer" rows="2"><?= e($s['hero_offer'] ?? '') ?></textarea></label>

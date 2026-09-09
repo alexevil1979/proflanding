@@ -105,8 +105,8 @@ sudo cp /ssd/www/proflanding/deploy/apache-vhost.conf.example /etc/apache2/sites
 sudo a2ensite proflanding.conf
 sudo apache2ctl configtest && sudo systemctl reload apache2
 
-# DNS A-запись proflanding.1tlt.ru → IP сервера уже должна указывать сюда
-sudo certbot --apache -d proflanding.1tlt.ru
+# DNS A-запись bizdevops.site → IP сервера уже должна указывать сюда
+sudo certbot --apache -d bizdevops.site -d www.bizdevops.site
 
 # PHP-FPM (сервис из сорцов):
 sudo systemctl reload php82-fpm
@@ -117,7 +117,7 @@ sudo systemctl reload apache2
 
 ## Первый вход в админку
 
-URL: `https://proflanding.1tlt.ru/admin/login`
+URL: `https://bizdevops.site/admin/login`
 
 Из seed:
 

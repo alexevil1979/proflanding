@@ -9,7 +9,7 @@
 use App\Core\Csrf;
 
 $h1 = $seo['h1'] ?? setting('hero_offer');
-$name = setting('site_name', 'IT Specialist');
+$name = brand_name();
 $role = setting('site_role');
 $jsonLdPerson = [
     '@context' => 'https://schema.org',
@@ -68,7 +68,7 @@ foreach ($faq as $item) {
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="container hero-grid">
         <div class="hero-copy reveal">
-            <p class="eyebrow"><?= e($name) ?> · <?= e($role) ?></p>
+            <p class="eyebrow"><bdi dir="ltr"><?= e($name) ?></bdi> · <?= e($role) ?></p>
             <h1 id="hero-title"><?= e($h1) ?></h1>
             <p class="lead"><?= e(setting('hero_sub')) ?></p>
             <ul class="trust-bullets">
@@ -96,7 +96,7 @@ foreach ($faq as $item) {
                     <text x="160" y="360" text-anchor="middle" fill="#ecfeff" font-size="14" font-family="Manrope,sans-serif">IT Specialist</text>
                 </svg>
                 <div class="portrait-meta">
-                    <strong><?= e($name) ?></strong>
+                    <strong><bdi dir="ltr"><?= e($name) ?></bdi></strong>
                     <span><?= e(setting('city')) ?></span>
                 </div>
             </div>
