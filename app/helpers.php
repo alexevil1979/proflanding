@@ -224,7 +224,7 @@ function analytics_sanitize_snippet(string $html): string
 /** @return list<string> */
 function index_locales(): array
 {
-    $raw = setting('index_locales', 'ru,en');
+    $raw = setting('index_locales', 'ru,en,fa,zh,tr,ar');
     $parts = preg_split('/[\s,]+/', strtolower($raw)) ?: [];
     $allowed = \App\Core\Lang::codes();
     $out = [];

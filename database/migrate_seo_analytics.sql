@@ -1,6 +1,6 @@
 -- SEO / analytics settings
 INSERT INTO settings (k, v) VALUES
-('index_locales', 'ru,en'),
+('index_locales', 'ru,en,fa,zh,tr,ar'),
 ('yandex_metrika_id', ''),
 ('google_analytics_id', ''),
 ('google_tag_manager_id', ''),
@@ -10,7 +10,10 @@ INSERT INTO settings (k, v) VALUES
 ('ga_event_lead', 'generate_lead'),
 ('head_custom', ''),
 ('body_custom', '')
-ON DUPLICATE KEY UPDATE k = k;
+ON DUPLICATE KEY UPDATE k = VALUES(k);
+
+UPDATE settings SET v = 'ru,en,fa,zh,tr,ar' WHERE k = 'index_locales';
+
 
 UPDATE pages_seo SET
   title = 'IT-решения для бизнеса — BizDevOps',

@@ -25,7 +25,7 @@ final class SeoController
         View::render('admin/seo/edit', [
             'title' => 'SEO',
             'pages' => $byKey,
-            'index_locales' => setting('index_locales', 'ru,en'),
+            'index_locales' => setting('index_locales', 'ru,en,fa,zh,tr,ar'),
             'locales' => Lang::LOCALES,
             'checklist' => $this->checklist(),
             'flash_ok' => flash('ok'),

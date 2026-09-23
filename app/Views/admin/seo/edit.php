@@ -1,7 +1,7 @@
 <?php
 use App\Core\Csrf;
 $keys = ['home' => 'Главная', 'privacy' => 'Политика', 'offer' => 'Оферта'];
-$selected = preg_split('/[\s,]+/', strtolower((string)$index_locales)) ?: ['ru', 'en'];
+$selected = preg_split('/[\s,]+/', strtolower((string)$index_locales)) ?: ['ru', 'en', 'fa', 'zh', 'tr', 'ar'];
 ?>
 <div class="panel" style="margin-bottom:1.25rem;max-width:820px">
     <h2 style="margin:0 0 .75rem;font-size:1.05rem">Чеклист к индексации</h2>
