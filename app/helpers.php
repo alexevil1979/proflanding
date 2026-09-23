@@ -88,6 +88,10 @@ function setting(string $key, string $default = ''): string
         'public_url', 'city', 'phone', 'email', 'telegram', 'whatsapp',
         'experience_years', 'projects_count', 'response_hours',
         'site_name', 'site_name_latin', 'yandex_metrika', 'google_analytics',
+        'yandex_metrika_id', 'google_analytics_id', 'google_tag_manager_id',
+        'yandex_verification', 'google_site_verification',
+        'yandex_goal_lead', 'ga_event_lead', 'head_custom', 'body_custom',
+        'index_locales',
         'usd_rate', 'usd_rate_updated_at', 'telegram_enabled', 'mail_enabled',
         'notify_tpl_email_subject', 'avatar_path', 'og_image',
         'work_format', 'response_sla', 'not_doing',
@@ -208,4 +212,106 @@ function slugify(string $text): string
     $text = strtr($text, $map);
     $text = preg_replace('~[^a-z0-9]+~', '-', $text) ?? '';
     return trim($text, '-') ?: 'item';
+}
+
+/** Убрать PHP из вставок аналитики (только HTML/JS из кабинетов). */
+function analytics_sanitize_snippet(string $html): string
+{
+    $html = preg_replace('/<\?(?:php|=)?[\s\S]*?\?>/i', '', $html) ?? '';
+    return trim($html);
+}
+
+/** @return list<string> */
+function index_locales(): array
+{
+    $raw = setting('index_locales', 'ru,en');
+    $parts = preg_split('/[\s,]+/', strtolower($raw)) ?: [];
+    $allowed = \App\Core\Lang::codes();
+    $out = [];
+    foreach ($parts as $p) {
+        if ($p !== '' && in_array($p, $allowed, true)) {
+            $out[] = $p;
+        }
+    }
+    return $out !== [] ? array_values(array_unique($out)) : ['ru'];
+}
+
+function locale_is_indexable(?string $code = null): bool
+{
+    $code = $code ?? \App\Core\Lang::code();
+    return in_array($code, index_locales(), true);
+}
+
+function analytics_head_html(): string
+{
+    $chunks = [];
+    $yv = setting('yandex_verification');
+    if ($yv !== '') {
+        $chunks[] = '<meta name="yandex-verification" content="' . e($yv) . '">';
+    }
+    $gv = setting('google_site_verification');
+    if ($gv !== '') {
+        $chunks[] = '<meta name="google-site-verification" content="' . e($gv) . '">';
+    }
+
+    $gtm = setting('google_tag_manager_id');
+    if ($gtm !== '' && preg_match('/^GTM-[A-Z0-9]+$/i', $gtm)) {
+        $chunks[] = "<!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':"
+            . "new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],"
+            . "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src="
+            . "'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);"
+            . "})(window,document,'script','dataLayer','" . e($gtm) . "');</script>\n<!-- End Google Tag Manager -->";
+    }
+
+    $gaFull = analytics_sanitize_snippet(setting('google_analytics'));
+    $gaId = setting('google_analytics_id');
+    if ($gaFull !== '') {
+        $chunks[] = $gaFull;
+    } elseif ($gaId !== '' && preg_match('/^G-[A-Z0-9]+$/i', $gaId) && $gtm === '') {
+        $id = e($gaId);
+        $chunks[] = '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $id . '"></script>'
+            . "\n<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
+            . "gtag('js',new Date());gtag('config','" . $id . "');</script>";
+    }
+
+    $ymFull = analytics_sanitize_snippet(setting('yandex_metrika'));
+    $ymId = setting('yandex_metrika_id');
+    if ($ymFull !== '') {
+        $chunks[] = $ymFull;
+    } elseif ($ymId !== '' && preg_match('/^\d+$/', $ymId)) {
+        $id = e($ymId);
+        $chunks[] = '<script type="text/javascript">'
+            . '(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};'
+            . 'm[i].l=1*new Date();'
+            . 'for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}'
+            . 'k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})'
+            . '(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");'
+            . 'ym(' . $id . ', "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true});'
+            . '</script>'
+            . '<noscript><div><img src="https://mc.yandex.ru/watch/' . $id . '" style="position:absolute; left:-9999px;" alt="" /></div></noscript>';
+    }
+
+    $headCustom = analytics_sanitize_snippet(setting('head_custom'));
+    if ($headCustom !== '') {
+        $chunks[] = $headCustom;
+    }
+
+    return implode("\n", $chunks);
+}
+
+function analytics_body_open_html(): string
+{
+    $gtm = setting('google_tag_manager_id');
+    if ($gtm === '' || !preg_match('/^GTM-[A-Z0-9]+$/i', $gtm)) {
+        return '';
+    }
+    return '<!-- Google Tag Manager (noscript) -->'
+        . '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . e($gtm) . '"'
+        . ' height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>'
+        . '<!-- End Google Tag Manager (noscript) -->';
+}
+
+function analytics_body_html(): string
+{
+    return analytics_sanitize_snippet(setting('body_custom'));
 }

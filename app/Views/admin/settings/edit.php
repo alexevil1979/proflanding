@@ -23,9 +23,8 @@
     <label>Формат работы<textarea name="work_format" rows="2"><?= e($s['work_format'] ?? '') ?></textarea></label>
     <label>SLA ответа<textarea name="response_sla" rows="2"><?= e($s['response_sla'] ?? '') ?></textarea></label>
     <label>Что не беру<textarea name="not_doing" rows="3"><?= e($s['not_doing'] ?? '') ?></textarea></label>
-    <label>Яндекс.Метрика (код)<textarea name="yandex_metrika" rows="4"><?= e($s['yandex_metrika'] ?? '') ?></textarea></label>
-    <label>Google Analytics<textarea name="google_analytics" rows="4"><?= e($s['google_analytics'] ?? '') ?></textarea></label>
     <label>FAQ JSON (RU)<textarea name="faq_json" rows="10"><?= e($s['faq_json'] ?? '') ?></textarea></label>
+    <p class="muted">Счётчики аналитики и верификация поисковиков — в разделе <a href="/admin/analytics">Аналитика</a>.</p>
 
     <fieldset>
         <legend>Курс USD (ЦБ РФ)</legend>

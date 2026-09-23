@@ -12,21 +12,27 @@ final class PageController
 {
     public function privacy(): void
     {
-        $seo = PageSeo::get('privacy') ?? [];
-        $seo['title'] = __('footer_privacy');
-        $seo['h1'] = __('footer_privacy');
-        View::render('pages/privacy', [
-            'seo' => $seo,
-            'settings' => Setting::all(),
-        ], 'layouts/main');
+        $this->renderLegal('privacy', __('footer_privacy'));
     }
 
     public function offer(): void
     {
-        $seo = PageSeo::get('offer') ?? [];
-        $seo['title'] = __('footer_offer');
-        $seo['h1'] = __('footer_offer');
-        View::render('pages/offer', [
+        $this->renderLegal('offer', __('footer_offer'));
+    }
+
+    private function renderLegal(string $key, string $fallbackTitle): void
+    {
+        $seo = PageSeo::get($key) ?? [];
+        if (trim((string)($seo['title'] ?? '')) === '') {
+            $seo['title'] = $fallbackTitle . ' — ' . brand_name();
+        }
+        if (trim((string)($seo['h1'] ?? '')) === '') {
+            $seo['h1'] = $fallbackTitle;
+        }
+        if (trim((string)($seo['description'] ?? '')) === '') {
+            $seo['description'] = setting('site_tagline');
+        }
+        View::render('pages/' . $key, [
             'seo' => $seo,
             'settings' => Setting::all(),
         ], 'layouts/main');

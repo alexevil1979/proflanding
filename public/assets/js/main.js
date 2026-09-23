@@ -119,6 +119,17 @@
           showToast(data.message || (window.PL_I18N && window.PL_I18N.leadOk) || 'OK');
           form.reset();
           clearFieldErrors(form);
+          try {
+            var i18n = window.PL_I18N || {};
+            if (typeof window.ym === 'function' && i18n.ymId) {
+              window.ym(Number(i18n.ymId), 'reachGoal', i18n.ymGoal || 'lead');
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', i18n.gaEvent || 'generate_lead', { event_category: 'lead', event_label: 'form' });
+            }
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: i18n.gaEvent || 'generate_lead' });
+          } catch (ignore) {}
         } else {
           if (data.errors) showFieldErrors(form, data.errors);
           showToast(data.error || (window.PL_I18N && window.PL_I18N.leadErr) || 'Error', true);

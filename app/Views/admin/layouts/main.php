@@ -18,6 +18,7 @@
     <a href="/admin/portfolio">Кейсы</a>
     <a href="/admin/settings">Контент</a>
     <a href="/admin/seo">SEO</a>
+    <a href="/admin/analytics">Аналитика</a>
     <a href="/admin/notifications">Уведомления</a>
     <a href="/admin/password">Пароль</a>
     <a href="/" target="_blank" rel="noopener">Открыть сайт</a>

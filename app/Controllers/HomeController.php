@@ -17,13 +17,24 @@ final class HomeController
     public function index(): void
     {
         $seo = PageSeo::get('home') ?? [];
-        // SEO title/description from content pack when not RU
         if (Lang::code() !== 'ru') {
-            $seo['title'] = Lang::content('seo.home.title', $seo['title'] ?? '');
-            $seo['description'] = Lang::content('seo.home.description', $seo['description'] ?? '');
-            $seo['h1'] = setting('hero_offer');
+            $t = Lang::content('seo.home.title', '');
+            $d = Lang::content('seo.home.description', '');
+            if ($t !== '') {
+                $seo['title'] = $t;
+            }
+            if ($d !== '') {
+                $seo['description'] = $d;
+            }
+            $seo['h1'] = setting('hero_offer') ?: ($seo['h1'] ?? '');
             $seo['og_title'] = $seo['title'] ?: ($seo['og_title'] ?? null);
             $seo['og_description'] = $seo['description'] ?: ($seo['og_description'] ?? null);
+        }
+        if (!empty($seo['title']) && mb_strlen((string)$seo['title']) > 60) {
+            $seo['title'] = mb_substr((string)$seo['title'], 0, 60);
+        }
+        if (!empty($seo['description']) && mb_strlen((string)$seo['description']) > 160) {
+            $seo['description'] = mb_substr((string)$seo['description'], 0, 160);
         }
 
         $faqRu = json_decode(Setting::get('faq_json', '[]'), true);

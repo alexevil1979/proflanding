@@ -3,6 +3,10 @@ RewriteEngine On
 # Secrets
 RewriteRule ^\.env - [F,L]
 
+# Динамические robots/sitemap через приложение
+RewriteRule ^robots\.txt$ index.php [L]
+RewriteRule ^sitemap\.xml$ index.php [L]
+
 # Не зацикливать front controller
 RewriteRule ^index\.php$ - [L]
 

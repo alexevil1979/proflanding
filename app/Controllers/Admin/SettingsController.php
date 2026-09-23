@@ -33,7 +33,7 @@ final class SettingsController
             'phone', 'email', 'telegram', 'whatsapp', 'city',
             'experience_years', 'projects_count', 'response_hours',
             'work_format', 'response_sla', 'not_doing',
-            'yandex_metrika', 'google_analytics', 'faq_json', 'og_image',
+            'faq_json', 'og_image',
         ];
         $pairs = [];
         foreach ($keys as $key) {

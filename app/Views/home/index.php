@@ -32,6 +32,10 @@ $jsonLdPerson = [
 if ($avatar !== '') {
     $jsonLdPerson['image'] = media_url($avatar);
 }
+$sameAs = array_values(array_filter([setting('telegram'), setting('whatsapp')]));
+if ($sameAs) {
+    $jsonLdPerson['sameAs'] = $sameAs;
+}
 $offersClean = [];
 foreach ($services as $s) {
     $o = [

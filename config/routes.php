@@ -6,7 +6,9 @@ use App\Controllers\HomeController;
 use App\Controllers\LeadController;
 use App\Controllers\PageController;
 use App\Controllers\SitemapController;
+use App\Controllers\RobotsController;
 use App\Controllers\Admin\AuthController;
+use App\Controllers\Admin\AnalyticsController;
 use App\Controllers\Admin\DashboardController;
 use App\Controllers\Admin\LeadsController;
 use App\Controllers\Admin\ServicesController;
@@ -24,6 +26,7 @@ $router->post('/lead', [LeadController::class, 'store']);
 $router->get('/privacy', [PageController::class, 'privacy']);
 $router->get('/offer', [PageController::class, 'offer']);
 $router->get('/sitemap.xml', [SitemapController::class, 'index']);
+$router->get('/robots.txt', [RobotsController::class, 'index']);
 
 $router->get('/admin/login', [AuthController::class, 'loginForm']);
 $router->post('/admin/login', [AuthController::class, 'login']);
@@ -64,6 +67,9 @@ $router->post('/admin/settings/refresh-usd', [SettingsController::class, 'refres
 
 $router->get('/admin/seo', [SeoController::class, 'edit']);
 $router->post('/admin/seo', [SeoController::class, 'update']);
+
+$router->get('/admin/analytics', [AnalyticsController::class, 'edit']);
+$router->post('/admin/analytics', [AnalyticsController::class, 'update']);
 
 $router->get('/admin/notifications', [NotificationsController::class, 'index']);
 $router->post('/admin/notifications', [NotificationsController::class, 'update']);

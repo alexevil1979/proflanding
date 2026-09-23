@@ -187,6 +187,8 @@ deploy/          # пример Apache vhost
 
 ## CHANGELOG (оптимизация bizdevops.site)
 
+- Админка **Аналитика**: Метрика / GA4 / GTM / верификация Яндекс+Google / custom head-body; цели на заявку
+- SEO: индекс только выбранных локалей, чеклист, WebSite JSON-LD, динамический robots (Host + Clean-param)
 - Каноникал / sitemap / hreflang / JSON-LD / robots — только `https://bizdevops.site` (`settings.public_url` + `APP_URL`)
 - 301 с `proflanding.1tlt.ru` на тот же путь bizdevops.site
 - Mobile header: лого + бургер; языки и CTA внутри меню
