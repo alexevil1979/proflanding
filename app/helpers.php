@@ -92,6 +92,8 @@ function setting(string $key, string $default = ''): string
         'yandex_verification', 'google_site_verification',
         'yandex_goal_lead', 'ga_event_lead', 'head_custom', 'body_custom',
         'index_locales',
+        'promo_banner_enabled', 'promo_banner_style', 'promo_banner_dismissible',
+        'promo_banner_cta_url', 'promo_banner_until', 'promo_banner_texts',
         'usd_rate', 'usd_rate_updated_at', 'telegram_enabled', 'mail_enabled',
         'notify_tpl_email_subject', 'avatar_path', 'og_image',
         'work_format', 'response_sla', 'not_doing',
@@ -314,4 +316,112 @@ function analytics_body_open_html(): string
 function analytics_body_html(): string
 {
     return analytics_sanitize_snippet(setting('body_custom'));
+}
+
+/** @return array<string, array{title:string,sub:string,cta:string}> */
+function promo_banner_texts_all(): array
+{
+    $defaults = promo_banner_default_texts();
+    $raw = setting('promo_banner_texts', '');
+    if ($raw === '') {
+        return $defaults;
+    }
+    $decoded = json_decode($raw, true);
+    if (!is_array($decoded)) {
+        return $defaults;
+    }
+    $out = $defaults;
+    foreach ($decoded as $code => $row) {
+        if (!is_string($code) || !is_array($row)) {
+            continue;
+        }
+        $out[$code] = [
+            'title' => trim((string)($row['title'] ?? $defaults[$code]['title'] ?? '')),
+            'sub' => trim((string)($row['sub'] ?? $defaults[$code]['sub'] ?? '')),
+            'cta' => trim((string)($row['cta'] ?? $defaults[$code]['cta'] ?? '')),
+        ];
+    }
+    return $out;
+}
+
+/** @return array{title:string,sub:string,cta:string}|null */
+function promo_banner_current(): ?array
+{
+    if (setting('promo_banner_enabled', '0') !== '1') {
+        return null;
+    }
+    $until = setting('promo_banner_until', '');
+    if ($until !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $until)) {
+        $end = strtotime($until . ' 23:59:59');
+        if ($end !== false && time() > $end) {
+            return null;
+        }
+    }
+    $all = promo_banner_texts_all();
+    $code = \App\Core\Lang::code();
+    $row = $all[$code] ?? null;
+    if (!$row || trim($row['title']) === '') {
+        $row = $all['ru'] ?? $all['en'] ?? null;
+    }
+    if (!$row || trim($row['title']) === '') {
+        return null;
+    }
+    $style = (int)setting('promo_banner_style', '1');
+    if ($style < 1 || $style > 5) {
+        $style = 1;
+    }
+    $ctaUrl = setting('promo_banner_cta_url', '#lead');
+    if ($ctaUrl === '' || $ctaUrl === '#lead') {
+        $ctaUrl = lang_url('/#lead');
+    } elseif (str_starts_with($ctaUrl, '#')) {
+        $ctaUrl = lang_url('/' . $ctaUrl);
+    } elseif (str_starts_with($ctaUrl, '/#')) {
+        $ctaUrl = lang_url($ctaUrl);
+    }
+    return [
+        'title' => $row['title'],
+        'sub' => $row['sub'],
+        'cta' => $row['cta'] !== '' ? $row['cta'] : __('cta_lead'),
+        'style' => $style,
+        'cta_url' => $ctaUrl,
+        'until' => $until !== '' ? $until : date('Y-m-t'),
+        'dismissible' => setting('promo_banner_dismissible', '1') === '1',
+    ];
+}
+
+/** @return array<string, array{title:string,sub:string,cta:string}> */
+function promo_banner_default_texts(): array
+{
+    return [
+        'ru' => [
+            'title' => 'Скидка 30% на услуги до конца месяца',
+            'sub' => 'Успейте зафиксировать цену — акция действует до последнего дня месяца',
+            'cta' => 'Успеть со скидкой',
+        ],
+        'en' => [
+            'title' => '30% off services until month end',
+            'sub' => 'Lock in the price — offer lasts through the last day of the month',
+            'cta' => 'Claim the discount',
+        ],
+        'fa' => [
+            'title' => '۳۰٪ تخفیف خدمات تا پایان ماه',
+            'sub' => 'قیمت را قفل کنید — پیشنهاد تا آخرین روز ماه معتبر است',
+            'cta' => 'دریافت تخفیف',
+        ],
+        'zh' => [
+            'title' => '本月底前服务享 30% 折扣',
+            'sub' => '锁定价格——优惠有效至本月最后一天',
+            'cta' => '立即领取',
+        ],
+        'tr' => [
+            'title' => 'Ay sonuna kadar hizmetlerde %30 indirim',
+            'sub' => 'Fiyatı sabitleyin — teklif ayın son gününe kadar geçerli',
+            'cta' => 'İndirimi al',
+        ],
+        'ar' => [
+            'title' => 'خصم 30٪ على الخدمات حتى نهاية الشهر',
+            'sub' => 'ثبّت السعر — العرض ساري حتى آخر يوم في الشهر',
+            'cta' => 'احصل على الخصم',
+        ],
+    ];
 }

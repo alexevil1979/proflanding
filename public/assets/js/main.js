@@ -184,4 +184,42 @@
   } else {
     document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
   }
+
+  (function promoBanner() {
+    const banner = document.getElementById('promoBanner');
+    if (!banner) return;
+    const storageKey = 'promo_banner_dismissed_' + (banner.getAttribute('data-until') || '');
+    if (banner.getAttribute('data-dismissible') === '1' && storageKey && localStorage.getItem(storageKey) === '1') {
+      banner.hidden = true;
+      return;
+    }
+    const closeBtn = document.getElementById('promoBannerClose');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        banner.hidden = true;
+        try { localStorage.setItem(storageKey, '1'); } catch (e) {}
+      });
+    }
+    const countdownEl = banner.querySelector('[data-promo-countdown]');
+    const until = banner.getAttribute('data-until');
+    if (!countdownEl || !until) return;
+    function tick() {
+      const end = new Date(until + 'T23:59:59');
+      const now = new Date();
+      const diff = end.getTime() - now.getTime();
+      if (diff <= 0) {
+        countdownEl.textContent = '';
+        banner.hidden = true;
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      countdownEl.textContent = d > 0
+        ? (d + 'd ' + h + 'h')
+        : (h + 'h ' + m + 'm');
+    }
+    tick();
+    setInterval(tick, 60000);
+  })();
 })();

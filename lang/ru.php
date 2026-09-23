@@ -104,4 +104,5 @@ return [
     'portrait_alt' => 'Портрет IT-специалиста — заглушка',
     'usd_approx' => 'примерно',
     'rate_note' => 'Курс USD по ЦБ РФ',
+    'banner_close' => 'Закрыть баннер',
 ];

@@ -403,4 +403,153 @@ html[data-theme="dark"] .package-ribbon { color: #042f2e; }
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .btn { transition: none; }
+  .promo-banner__glow,
+  .promo-banner__pulse,
+  .promo-banner--1,
+  .promo-banner--3,
+  .promo-banner--5 .promo-banner__glow { animation: none !important; }
 }
+
+/* —— Promo banner —— */
+.promo-banner {
+  position: relative;
+  overflow: hidden;
+  z-index: 55;
+  color: #fff;
+  isolation: isolate;
+}
+.promo-banner[hidden] { display: none !important; }
+.promo-banner__inner {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: .85rem 0;
+  min-height: 3.25rem;
+}
+.promo-banner__copy { flex: 1 1 16rem; min-width: 0; }
+.promo-banner__eyebrow {
+  display: inline-flex; align-items: center; gap: .45rem;
+  margin: 0 0 .25rem; font-size: .72rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; opacity: .92;
+}
+.promo-banner__pulse {
+  width: .55rem; height: .55rem; border-radius: 50%;
+  background: currentColor; box-shadow: 0 0 0 0 rgba(255,255,255,.55);
+  animation: promoPulse 1.6s ease-out infinite;
+}
+.promo-banner__title {
+  margin: 0; font-size: clamp(.95rem, 2.4vw, 1.15rem);
+  font-weight: 800; letter-spacing: -.01em; line-height: 1.25;
+}
+.promo-banner__sub {
+  margin: .2rem 0 0; font-size: .86rem; opacity: .9; max-width: 42rem;
+}
+.promo-banner__actions {
+  display: flex; align-items: center; gap: .55rem; flex-shrink: 0;
+}
+.promo-banner__cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .55rem 1rem; border-radius: 999px; font-weight: 800;
+  font-size: .88rem; text-decoration: none; color: inherit;
+  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+  backdrop-filter: blur(6px);
+  transition: transform .15s ease, background .15s ease;
+}
+.promo-banner__cta:hover {
+  text-decoration: none; transform: translateY(-1px);
+  background: rgba(255,255,255,.28); color: inherit;
+}
+.promo-banner__close {
+  width: 36px; height: 36px; border-radius: 10px; border: 1px solid rgba(255,255,255,.28);
+  background: rgba(0,0,0,.12); color: inherit; font-size: 1.25rem; line-height: 1;
+  cursor: pointer;
+}
+.promo-banner__glow {
+  position: absolute; inset: -40% -10% auto;
+  height: 180%; pointer-events: none; opacity: .45; z-index: -1;
+  background: radial-gradient(circle at 30% 50%, rgba(255,255,255,.35), transparent 55%);
+}
+
+/* Style 1 — teal shimmer */
+.promo-banner--1 {
+  background: linear-gradient(105deg, #0f766e 0%, #115e59 40%, #1e3a5f 100%);
+  background-size: 180% 100%;
+  animation: promoShimmer 8s ease-in-out infinite;
+}
+.promo-banner--1 .promo-banner__cta { background: #ecfeff; color: #0f766e; border-color: transparent; }
+
+/* Style 2 — midnight gold */
+.promo-banner--2 {
+  background: linear-gradient(120deg, #0b1220 0%, #1a2740 55%, #3d2a0f 100%);
+}
+.promo-banner--2 .promo-banner__title { color: #f5e6c8; }
+.promo-banner--2 .promo-banner__cta {
+  background: linear-gradient(135deg, #e8c872, #c9a227); color: #1a1205; border: 0;
+}
+.promo-banner--2 .promo-banner__glow {
+  background: radial-gradient(circle at 70% 40%, rgba(232,200,114,.35), transparent 50%);
+}
+
+/* Style 3 — coral pulse */
+.promo-banner--3 {
+  background: linear-gradient(100deg, #9f1239 0%, #e11d48 45%, #fb7185 100%);
+  animation: promoBreath 5s ease-in-out infinite;
+}
+.promo-banner--3 .promo-banner__cta { background: #fff; color: #9f1239; border: 0; }
+
+/* Style 4 — forest glass */
+.promo-banner--4 {
+  background:
+    linear-gradient(135deg, rgba(6, 78, 59, .92), rgba(4, 47, 46, .95)),
+    repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(255,255,255,.04) 18px, rgba(255,255,255,.04) 19px);
+  border-bottom: 1px solid rgba(167, 243, 208, .25);
+}
+.promo-banner--4 .promo-banner__cta {
+  background: rgba(167, 243, 208, .2); color: #ecfdf5; border-color: rgba(167, 243, 208, .45);
+}
+
+/* Style 5 — electric stripe */
+.promo-banner--5 {
+  background: #111827;
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6, #22d3ee) 1;
+}
+.promo-banner--5 .promo-banner__glow {
+  inset: 0; height: 100%; opacity: .55;
+  background: linear-gradient(90deg, transparent, rgba(34,211,238,.2), rgba(167,139,250,.25), transparent);
+  animation: promoStripe 6s linear infinite;
+}
+.promo-banner--5 .promo-banner__cta {
+  background: #22d3ee; color: #042f2e; border: 0;
+}
+
+@keyframes promoShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes promoPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,.55); }
+  70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
+@keyframes promoBreath {
+  0%, 100% { filter: saturate(1); }
+  50% { filter: saturate(1.15) brightness(1.05); }
+}
+@keyframes promoStripe {
+  0% { transform: translateX(-20%); }
+  100% { transform: translateX(20%); }
+}
+
+html[dir="rtl"] .promo-banner__inner { flex-direction: row-reverse; }
+
+@media (max-width: 640px) {
+  .promo-banner__inner { padding: .75rem 0; gap: .65rem; }
+  .promo-banner__sub { display: none; }
+  .promo-banner__cta { width: 100%; }
+  .promo-banner__actions { width: 100%; }
+}
+

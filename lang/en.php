@@ -104,4 +104,5 @@ return [
     'portrait_alt' => 'IT specialist portrait placeholder',
     'usd_approx' => 'approx.',
     'rate_note' => 'USD rate by Central Bank of Russia',
+    'banner_close' => 'Close banner',
 ];

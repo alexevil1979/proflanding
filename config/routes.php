@@ -9,6 +9,7 @@ use App\Controllers\SitemapController;
 use App\Controllers\RobotsController;
 use App\Controllers\Admin\AuthController;
 use App\Controllers\Admin\AnalyticsController;
+use App\Controllers\Admin\BannerController;
 use App\Controllers\Admin\DashboardController;
 use App\Controllers\Admin\LeadsController;
 use App\Controllers\Admin\ServicesController;
@@ -70,6 +71,9 @@ $router->post('/admin/seo', [SeoController::class, 'update']);
 
 $router->get('/admin/analytics', [AnalyticsController::class, 'edit']);
 $router->post('/admin/analytics', [AnalyticsController::class, 'update']);
+
+$router->get('/admin/banner', [BannerController::class, 'edit']);
+$router->post('/admin/banner', [BannerController::class, 'update']);
 
 $router->get('/admin/notifications', [NotificationsController::class, 'index']);
 $router->post('/admin/notifications', [NotificationsController::class, 'update']);

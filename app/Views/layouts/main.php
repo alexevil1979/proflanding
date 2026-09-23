@@ -85,6 +85,27 @@ $jsonLdWebsite = [
 <body>
 <?= analytics_body_open_html() ?>
 <a class="skip-link" href="#main"><?= e(__('skip_to_content')) ?></a>
+<?php
+$promo = promo_banner_current();
+if ($promo):
+?>
+<aside class="promo-banner promo-banner--<?= (int)$promo['style'] ?>" id="promoBanner" role="region" aria-label="<?= e($promo['title']) ?>" data-until="<?= e($promo['until']) ?>" data-dismissible="<?= $promo['dismissible'] ? '1' : '0' ?>">
+    <div class="promo-banner__glow" aria-hidden="true"></div>
+    <div class="container promo-banner__inner">
+        <div class="promo-banner__copy">
+            <p class="promo-banner__eyebrow"><span class="promo-banner__pulse" aria-hidden="true"></span><span class="promo-banner__countdown" data-promo-countdown></span></p>
+            <p class="promo-banner__title"><?= e($promo['title']) ?></p>
+            <?php if ($promo['sub'] !== ''): ?><p class="promo-banner__sub"><?= e($promo['sub']) ?></p><?php endif; ?>
+        </div>
+        <div class="promo-banner__actions">
+            <a class="promo-banner__cta" href="<?= e($promo['cta_url']) ?>"><?= e($promo['cta']) ?></a>
+            <?php if ($promo['dismissible']): ?>
+            <button type="button" class="promo-banner__close" id="promoBannerClose" aria-label="<?= e(__('banner_close', 'Закрыть')) ?>">×</button>
+            <?php endif; ?>
+        </div>
+    </div>
+</aside>
+<?php endif; ?>
 <header class="site-header" id="top">
     <div class="container header-inner">
         <a class="brand" href="<?= e(lang_url('/')) ?>">
