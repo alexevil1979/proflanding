@@ -184,6 +184,7 @@ deploy/          # пример Apache vhost
 ## Документация
 
 - [План размещения в поисковиках](docs/seo-indexing-plan.md) — Яндекс / Google, sitemap, зеркала, календарь на 30 дней
+- [Установка на 1tlt.ru (чистый Ubuntu)](docs/install-1tlt.md)
 
 ## CHANGELOG (оптимизация bizdevops.site)
 

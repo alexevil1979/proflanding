@@ -15,7 +15,7 @@ final class SitemapController
             header('Content-Type: application/xml; charset=utf-8');
             header('Cache-Control: public, max-age=3600');
             $base = rtrim(app_url(), '/');
-            if ($base === '' || preg_match('#1tlt\.ru#i', $base)) {
+            if ($base === '') {
                 $base = 'https://bizdevops.site';
             }
             $pages = [

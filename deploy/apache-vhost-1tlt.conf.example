@@ -1,0 +1,36 @@
+# Apache 2.4 — шаблон vhost (подставьте домен)
+# PHP 8.2 FPM: порт 9000 ИЛИ unix-сокет — см. комментарий ниже
+#
+# Пример для 1tlt.ru:
+#   ServerName 1tlt.ru
+#   ServerAlias www.1tlt.ru
+#   DocumentRoot /ssd/www/proflanding/public
+#
+# Сначала HTTP-only, затем:
+#   sudo certbot --apache -d 1tlt.ru -d www.1tlt.ru
+
+<VirtualHost *:80>
+    ServerName 1tlt.ru
+    ServerAlias www.1tlt.ru
+    DocumentRoot /ssd/www/proflanding/public
+
+    <Directory /ssd/www/proflanding/public>
+        AllowOverride All
+        Require all granted
+        DirectoryIndex index.php
+        Options -Indexes +FollowSymLinks
+    </Directory>
+
+    # Вариант A: FPM на TCP :9000 (как php82 из сорцов)
+    <FilesMatch "\.php$">
+        SetHandler "proxy:fcgi://127.0.0.1:9000"
+    </FilesMatch>
+
+    # Вариант B: системный php8.2-fpm (раскомментируйте и закомментируйте блок A)
+    # <FilesMatch "\.php$">
+    #     SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost"
+    # </FilesMatch>
+
+    ErrorLog ${APACHE_LOG_DIR}/1tlt-error.log
+    CustomLog ${APACHE_LOG_DIR}/1tlt-access.log combined
+</VirtualHost>

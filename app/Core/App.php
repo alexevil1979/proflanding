@@ -23,14 +23,35 @@ final class App
         $router->dispatch(Request::method(), Request::uri());
     }
 
+    /**
+     * 301 на APP_URL, если текущий Host перечислен в CANONICAL_REDIRECT_FROM
+     * (через запятую). Пример на bizdevops: proflanding.1tlt.ru
+     * На инстансе 1tlt.ru список пустой — редиректа нет.
+     */
     private static function canonicalHostRedirect(): void
     {
+        $fromRaw = trim((string)($_ENV['CANONICAL_REDIRECT_FROM'] ?? getenv('CANONICAL_REDIRECT_FROM') ?: ''));
+        if ($fromRaw === '') {
+            return;
+        }
         $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
-        if ($host === '' || !str_contains($host, '1tlt.ru')) {
+        $host = preg_replace('/:\d+$/', '', $host) ?? $host;
+        if ($host === '') {
+            return;
+        }
+        $targets = array_filter(array_map(
+            static fn(string $h): string => strtolower(trim($h)),
+            explode(',', $fromRaw)
+        ));
+        if ($targets === [] || !in_array($host, $targets, true)) {
+            return;
+        }
+        $base = rtrim((string)Config::get('url', ''), '/');
+        if ($base === '') {
             return;
         }
         $uri = (string)($_SERVER['REQUEST_URI'] ?? '/');
-        header('Location: https://bizdevops.site' . $uri, true, 301);
+        header('Location: ' . $base . $uri, true, 301);
         exit;
     }
 
